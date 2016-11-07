@@ -1,0 +1,493 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Swift3踩坑记 | Wesin&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Wesin">
+    
+
+    
+    <meta name="description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
+#Xcode8打开永远崩溃
+刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift3踩坑记">
+<meta property="og:url" content="http://wesin.github.io/2016/11/07/Swift3踩坑记/index.html">
+<meta property="og:site_name" content="Wesin's blog">
+<meta property="og:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
+#Xcode8打开永远崩溃
+刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
+<meta property="og:image" content="http://wesin.github.io/../images/xcode8/editschema.png">
+<meta property="og:updated_time" content="2016-11-07T03:58:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift3踩坑记">
+<meta name="twitter:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
+#Xcode8打开永远崩溃
+刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
+<meta name="twitter:image" content="http://wesin.github.io/../images/xcode8/editschema.png">
+
+    
+    
+    <link rel="icon" href="/img/cat.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/bigcat.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/bigcat.png">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Wesin&#39;s blog">Wesin&#39;s blog</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:wesin.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
+<p>#<strong>Xcode8打开永远崩溃</strong></p>
+<p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
+<p>#<strong>编译卡住不动了</strong></p>
+<p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
+<p>网上找了N多资料，终于发现蛛丝马迹。</p>
+<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
+<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
+<p>好吧，终于编译通过了。</p>
+<p>#<strong>Swift3优化不完整的代码bug</strong></p>
+<p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
+<p>`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell</p>
+<p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
+<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
+<p>#<strong>Swift3 extension的坑</strong></p>
+<p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
+<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
+<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/IOS/">IOS</a><a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/06/13/IOS蓝牙打印/"  title="IOS蓝牙打印">
+ <strong>下一篇：</strong><br/> 
+ <span>IOS蓝牙打印
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/11/07/Swift3踩坑记/" data-title="Swift3踩坑记" data-url="http://wesin.github.io/2016/11/07/Swift3踩坑记/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="wesin" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/IOS/" title="IOS">IOS<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/IOS/" title="IOS">IOS<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode8/" title="Xcode8">Xcode8<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://www.cocochina.com" target="_blank" title="CocoaChina">CocoaChina</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.github.com" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
+    <!-- <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=86 src="http://music.163.com/outchain/player?type=2&id=412902950&auto=1&height=66"></iframe> -->
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Wesin in Hunpun. <br/>
+			风也如是,雨也如梦.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/he8706799" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/wesin" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Wesin">Wesin</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wesin"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

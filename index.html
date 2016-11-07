@@ -79,6 +79,81 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
+<p>#<strong>Xcode8打开永远崩溃</strong></p>
+<p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
+<p>#<strong>编译卡住不动了</strong></p>
+<p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
+<p>网上找了N多资料，终于发现蛛丝马迹。</p>
+<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
+<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
+<p>好吧，终于编译通过了。</p>
+<p>#<strong>Swift3优化不完整的代码bug</strong></p>
+<p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
+<p>`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell</p>
+<p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
+<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
+<p>#<strong>Swift3 extension的坑</strong></p>
+<p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
+<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
+<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/IOS/">IOS</a><a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/11/07/Swift3踩坑记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/11/07/Swift3踩坑记/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2016/06/13/IOS蓝牙打印/" title="IOS蓝牙打印" itemprop="url">IOS蓝牙打印</a>
   </h1>
   <p class="article-author">By
@@ -426,11 +501,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+				<li><a href="/tags/IOS/" title="IOS">IOS<sup>2</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/IOS/" title="IOS">IOS<sup>1</sup></a></li>
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
 			
 		
 			
@@ -439,6 +514,14 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 			
 				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode8/" title="Xcode8">Xcode8<sup>1</sup></a></li>
 			
 		
 		</ul>
