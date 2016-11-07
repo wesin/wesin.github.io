@@ -103,8 +103,8 @@
 <p>好吧，终于编译通过了。</p>
 <p>#<strong>Swift3优化不完整的代码bug</strong></p>
 <p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<p>`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell</p>
-<p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
 <p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
 <p>#<strong>Swift3 extension的坑</strong></p>
 <p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>

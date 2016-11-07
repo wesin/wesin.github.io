@@ -22,7 +22,7 @@
 #Xcode8打开永远崩溃
 刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
 <meta property="og:image" content="http://wesin.github.io/../images/xcode8/editschema.png">
-<meta property="og:updated_time" content="2016-11-07T03:58:51.000Z">
+<meta property="og:updated_time" content="2016-11-07T05:35:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Swift3踩坑记">
 <meta name="twitter:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
@@ -117,8 +117,8 @@
 <p>好吧，终于编译通过了。</p>
 <p>#<strong>Swift3优化不完整的代码bug</strong></p>
 <p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<p>`func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell</p>
-<p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
 <p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
 <p>#<strong>Swift3 extension的坑</strong></p>
 <p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
