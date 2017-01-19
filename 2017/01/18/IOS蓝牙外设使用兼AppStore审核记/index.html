@@ -4,31 +4,37 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Swift3踩坑记 | Wesin&#39;s blog</title>
+    <title>IOS蓝牙外设使用兼AppStore审核记 | Wesin&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Wesin">
     
 
     
-    <meta name="description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
-#Xcode8打开永远崩溃
-刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
+    <meta name="description" content="ps:打印，又是打印，销售不知道哪里找来个打印机要支持。好吧，不是所有的蓝牙打印机都是可以用corebluetooth去连接的。这次是Bixolon，spp型号的打印机。网上一搜，是个韩国的打印机。中国连官方代理也没有，只有淘宝有个买家，自称代理。这种打印机用的是苹果MFI认证的连接方式。免不得要适配下，废话不多说，献上教程。
+#项目配置
+
+
+Build Phases 中添加ExternalAcc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift3踩坑记">
-<meta property="og:url" content="http://wesin.github.io/2016/11/07/Swift3踩坑记/index.html">
+<meta property="og:title" content="IOS蓝牙外设使用兼AppStore审核记">
+<meta property="og:url" content="http://wesin.github.io/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/index.html">
 <meta property="og:site_name" content="Wesin's blog">
-<meta property="og:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
-#Xcode8打开永远崩溃
-刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
-<meta property="og:image" content="http://wesin.github.io/../images/xcode8/editschema.png">
-<meta property="og:updated_time" content="2016-11-07T05:35:32.000Z">
+<meta property="og:description" content="ps:打印，又是打印，销售不知道哪里找来个打印机要支持。好吧，不是所有的蓝牙打印机都是可以用corebluetooth去连接的。这次是Bixolon，spp型号的打印机。网上一搜，是个韩国的打印机。中国连官方代理也没有，只有淘宝有个买家，自称代理。这种打印机用的是苹果MFI认证的连接方式。免不得要适配下，废话不多说，献上教程。
+#项目配置
+
+
+Build Phases 中添加ExternalAcc">
+<meta property="og:image" content="http://wesin.github.io/../images/xcode8/info-external.png">
+<meta property="og:updated_time" content="2017-01-19T07:31:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Swift3踩坑记">
-<meta name="twitter:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。
-#Xcode8打开永远崩溃
-刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Suppo">
-<meta name="twitter:image" content="http://wesin.github.io/../images/xcode8/editschema.png">
+<meta name="twitter:title" content="IOS蓝牙外设使用兼AppStore审核记">
+<meta name="twitter:description" content="ps:打印，又是打印，销售不知道哪里找来个打印机要支持。好吧，不是所有的蓝牙打印机都是可以用corebluetooth去连接的。这次是Bixolon，spp型号的打印机。网上一搜，是个韩国的打印机。中国连官方代理也没有，只有淘宝有个买家，自称代理。这种打印机用的是苹果MFI认证的连接方式。免不得要适配下，废话不多说，献上教程。
+#项目配置
+
+
+Build Phases 中添加ExternalAcc">
+<meta name="twitter:image" content="http://wesin.github.io/../images/xcode8/info-external.png">
 
     
     
@@ -86,14 +92,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+      <a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" title="IOS蓝牙外设使用兼AppStore审核记" itemprop="url">IOS蓝牙外设使用兼AppStore审核记</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
   <p class="article-time">
-    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    <time datetime="2017-01-18T06:27:20.000Z" itemprop="datePublished"> 发表于 2017-01-18</time>
     
   </p>
 </header>
@@ -106,33 +112,52 @@
 		
 		</div>
 		
-		<p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
-<p>#<strong>Xcode8打开永远崩溃</strong></p>
-<p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
-<p>#<strong>编译卡住不动了</strong></p>
-<p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
-<p>网上找了N多资料，终于发现蛛丝马迹。</p>
-<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
-<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
-<p>好吧，终于编译通过了。</p>
-<p>#<strong>Swift3优化不完整的代码bug</strong></p>
-<p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
-</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
-<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
-<p>#<strong>Swift3 extension的坑</strong></p>
-<p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
-<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
-<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+		<p><strong>ps</strong>:打印，又是打印，销售不知道哪里找来个打印机要支持。好吧，不是所有的蓝牙打印机都是可以用corebluetooth去连接的。这次是Bixolon，spp型号的打印机。网上一搜，是个韩国的打印机。中国连官方代理也没有，只有淘宝有个买家，自称代理。这种打印机用的是苹果MFI认证的连接方式。免不得要适配下，废话不多说，献上教程。</p>
+<p>#项目配置</p>
+<blockquote>
+<ul>
+<li>Build Phases 中添加ExternalAccessory.framework</li>
+<li>Capabilities<br>   1.启用background modes 勾选External accessory communication、 Uses Bluetooth LE accessories、Acts as a Bluetooth LE accessory<br>  2.启用Wireless Accessory Configuration</li>
+<li>info.plist添加Supported external accessory protocols<br><img src="../images/xcode8/info-external.png" alt="Screen shot"></li>
+</ul>
+</blockquote>
+<p>#代码<br>一般调用对应的sdk即可，用corebluetooth的寻找打印机是找不到的。</p>
+<p>#使用流程</p>
+<blockquote>
+<ul>
+<li>手机or pad蓝牙设置中先连接打印机。一般要输pin码。bixolon的pin码默认是0000</li>
+<li>连接好打印机后再去代码中调用sdk查找打印机，方能找到打印机。然后对应发指令即可。ps:网上有不需要sdk也可以连接打印机。没尝试过，代码略多</li>
+</ul>
+</blockquote>
+<p>#App审核</p>
+<p>很关键，使用MFI认证的连接方式是必须要从厂家获取PPID的。这个流程一般是这样的。跟厂家沟通，厂家一般会发你一个表格可以填，需要的内容app名称、版本号、bundleid等。然后厂家拿这个去苹果申请把bundleid添加到他们的ppid里面。然后把ppid告诉我们。我们放到itunes里面的remark中备注好即可。一般如果已经审核被拒绝了，放上去之后最好在拒绝后面回复下已经放入备注中，不然人家也不会注意看，分分钟又拒绝了。在下已然有这样的经历。<br>这里大致贴下拒绝信息：<br>—– MFi - PPID —–</p>
+<p>We have started your app review but are unable to complete the review because we cannot locate the MFi Product Plan ID (PPID) of the hardware accessory associated with your app.</p>
+<p>If you do not know the PPID, please contact the accessory manufacturer for this information. Once you have the PPID, please enter this information in the Notes section for your app in iTunes Connect.</p>
+<p>To edit the Notes section:</p>
+<ul>
+<li>Log in to iTunes Connect</li>
+<li>Click on “My Apps”</li>
+<li>Select your app</li>
+<li>Scroll down to “App Review Information”</li>
+<li>Update “Notes”</li>
+<li>Click Save</li>
+<li>Click Submit for Review</li>
+</ul>
+<p>Once you’ve updated the Notes section with the PPID, we can proceed with your app review. </p>
   
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/IOS/">IOS</a>
+</div>
+
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/IOS/">IOS</a>
+  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/Bluetooth/">Bluetooth</a>
   </div>
 
 </div>
@@ -176,19 +201,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" title="IOS蓝牙外设使用兼AppStore审核记">
-  <strong>上一篇：</strong><br/>
-  <span>
-  IOS蓝牙外设使用兼AppStore审核记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/13/IOS蓝牙打印/"  title="IOS蓝牙打印">
+<a href="/2016/11/07/Swift3踩坑记/"  title="Swift3踩坑记">
  <strong>下一篇：</strong><br/> 
- <span>IOS蓝牙打印
+ <span>Swift3踩坑记
 </span>
 </a>
 </div>
@@ -197,7 +214,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2016/11/07/Swift3踩坑记/" data-title="Swift3踩坑记" data-url="http://wesin.github.io/2016/11/07/Swift3踩坑记/"></div>
+	<div class="ds-thread" data-thread-key="2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" data-title="IOS蓝牙外设使用兼AppStore审核记" data-url="http://wesin.github.io/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/"></div>
 </section>
 
 

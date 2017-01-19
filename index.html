@@ -79,6 +79,100 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" title="IOS蓝牙外设使用兼AppStore审核记" itemprop="url">IOS蓝牙外设使用兼AppStore审核记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2017-01-18T06:27:20.000Z" itemprop="datePublished"> 发表于 2017-01-18</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>:打印，又是打印，销售不知道哪里找来个打印机要支持。好吧，不是所有的蓝牙打印机都是可以用corebluetooth去连接的。这次是Bixolon，spp型号的打印机。网上一搜，是个韩国的打印机。中国连官方代理也没有，只有淘宝有个买家，自称代理。这种打印机用的是苹果MFI认证的连接方式。免不得要适配下，废话不多说，献上教程。</p>
+<p>#项目配置</p>
+<blockquote>
+<ul>
+<li>Build Phases 中添加ExternalAccessory.framework</li>
+<li>Capabilities<br>   1.启用background modes 勾选External accessory communication、 Uses Bluetooth LE accessories、Acts as a Bluetooth LE accessory<br>  2.启用Wireless Accessory Configuration</li>
+<li>info.plist添加Supported external accessory protocols<br><img src="../images/xcode8/info-external.png" alt="Screen shot"></li>
+</ul>
+</blockquote>
+<p>#代码<br>一般调用对应的sdk即可，用corebluetooth的寻找打印机是找不到的。</p>
+<p>#使用流程</p>
+<blockquote>
+<ul>
+<li>手机or pad蓝牙设置中先连接打印机。一般要输pin码。bixolon的pin码默认是0000</li>
+<li>连接好打印机后再去代码中调用sdk查找打印机，方能找到打印机。然后对应发指令即可。ps:网上有不需要sdk也可以连接打印机。没尝试过，代码略多</li>
+</ul>
+</blockquote>
+<p>#App审核</p>
+<p>很关键，使用MFI认证的连接方式是必须要从厂家获取PPID的。这个流程一般是这样的。跟厂家沟通，厂家一般会发你一个表格可以填，需要的内容app名称、版本号、bundleid等。然后厂家拿这个去苹果申请把bundleid添加到他们的ppid里面。然后把ppid告诉我们。我们放到itunes里面的remark中备注好即可。一般如果已经审核被拒绝了，放上去之后最好在拒绝后面回复下已经放入备注中，不然人家也不会注意看，分分钟又拒绝了。在下已然有这样的经历。<br>这里大致贴下拒绝信息：<br>—– MFi - PPID —–</p>
+<p>We have started your app review but are unable to complete the review because we cannot locate the MFi Product Plan ID (PPID) of the hardware accessory associated with your app.</p>
+<p>If you do not know the PPID, please contact the accessory manufacturer for this information. Once you have the PPID, please enter this information in the Notes section for your app in iTunes Connect.</p>
+<p>To edit the Notes section:</p>
+<ul>
+<li>Log in to iTunes Connect</li>
+<li>Click on “My Apps”</li>
+<li>Select your app</li>
+<li>Scroll down to “App Review Information”</li>
+<li>Update “Notes”</li>
+<li>Click Save</li>
+<li>Click Submit for Review</li>
+</ul>
+<p>Once you’ve updated the Notes section with the PPID, we can proceed with your app review. </p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/IOS/">IOS</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/Bluetooth/">Bluetooth</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
   </h1>
   <p class="article-author">By
@@ -123,7 +217,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/IOS/">IOS</a><a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a>
+  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/IOS/">IOS</a>
   </div>
 
 </div>
@@ -439,7 +533,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Swift/">Swift</a><a href="/tags/IOS/">IOS</a><a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Print/">Print</a>
+  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/IOS/">IOS</a><a href="/tags/Swift/">Swift</a><a href="/tags/Print/">Print</a>
   </div>
 
 </div>
@@ -488,7 +582,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul>
 		
 		  
-			<li><a href="/categories/IOS/" title="IOS">IOS<sup>1</sup></a></li>
+			<li><a href="/categories/IOS/" title="IOS">IOS<sup>2</sup></a></li>
 		  
 		
 		</ul>
@@ -501,6 +595,18 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode8/" title="Xcode8">Xcode8<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/IOS/" title="IOS">IOS<sup>2</sup></a></li>
 			
 		
@@ -509,19 +615,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
-				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>1</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Xcode8/" title="Xcode8">Xcode8<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -591,7 +685,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
 		
 		<a href="/about" target="_blank" title="Wesin">Wesin</a>
 		
