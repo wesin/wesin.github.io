@@ -413,7 +413,7 @@ b
         
         <p><strong>ps</strong>:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。<br>闲话不多说，经验教程如下：</p>
 <p><strong>ps</strong>:我使用的是swift开发</p>
-<h1 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a><strong>蓝牙连接</strong></h1><blockquote>
+<h1 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a>蓝牙连接</h1><blockquote>
 <p>蓝牙框架引入</p>
 </blockquote>
 <p><code>import CoreBluetooth</code></p>
@@ -523,8 +523,7 @@ func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService s
     }
 }
 </code></pre><p>再来个断开连接的代码<br><code>blueManager?.cancelPeripheralConnection(currentDevice!.peripheral!)</code></p>
-<p>#打印机指令集</p>
-<p>再开始打印指令的教程前，免不得先说说遇到坑吧。</p>
+<h1 id="打印机指令集"><a href="#打印机指令集" class="headerlink" title="打印机指令集"></a>打印机指令集</h1><p>再开始打印指令的教程前，免不得先说说遇到坑吧。</p>
 <ol>
 <li>ios对打印机的指令发送是必须要有长度限度的，不同打印机的长度不一样。当你发现打印一个长长的字符串发现打一半卡死时，就得考虑下长度截取的问题了。</li>
 <li>大多数打印机没有交互功能，也就是只能对牛弹琴了。so断开打印机的时机也是个问题。当然一对一永远连接的就不用断开了。</li>
