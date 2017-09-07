@@ -79,6 +79,71 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2017/08/18/Python学习-实战篇/" title="Python学习-实战篇" itemprop="url">Python学习-实战篇</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2017-08-18T08:03:42.000Z" itemprop="datePublished"> 发表于 2017-08-18</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="Web自动化测试方案"><a href="#Web自动化测试方案" class="headerlink" title="Web自动化测试方案"></a>Web自动化测试方案</h1><p>Python selenium phantomJS</p>
+<p><a href="http://cuiqingcai.com/2599.html" target="_blank" rel="external">http://cuiqingcai.com/2599.html</a></p>
+<h1 id="运维自动化"><a href="#运维自动化" class="headerlink" title="运维自动化"></a>运维自动化</h1><p>使用 Fabric3 自动化部署 Python3 项目</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Python/">Python</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Python/">Python</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2017/08/18/Python学习-实战篇/#comments" class="ds-thread-count comments-count-link" data-thread-key="2017/08/18/Python学习-实战篇/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2017/08/14/敏捷开发被忽视的UML/" title="敏捷开发被忽视的UML" itemprop="url">敏捷开发被忽视的UML</a>
   </h1>
   <p class="article-author">By
@@ -194,6 +259,36 @@
 <pre><code>help(a.count)
 </code></pre><h3 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h3><p>例如 len(array)来获取列表长度这种，习惯了array.count无脑写法的，表示心累。</p>
 <p><a href="http://www.runoob.com/python/python-built-in-functions.html" target="_blank" rel="external">http://www.runoob.com/python/python-built-in-functions.html</a></p>
+<h1 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h1><p>定位脚本性能瓶颈</p>
+<pre><code>python -m cProfile my_script.py
+</code></pre><p>csv转json</p>
+<pre><code>python -c &quot;import csv,json;print json.dumps(list(csv.reader(open(&apos;csv_file.csv&apos;))))
+</code></pre><p>yield 接收输入</p>
+<pre><code>def grep(pattern):
+    print(&quot;Searching for&quot;, pattern)
+    while True:
+        line = (yield)
+        if pattern in line:
+            print(line)
+
+search = grep(&apos;coroutine&apos;)
+next(search)
+#output: Searching for coroutine
+search.send(&quot;I love you&quot;)
+search.send(&quot;Don&apos;t you love me?&quot;)
+search.send(&quot;I love coroutine instead!&quot;)
+#output: I love coroutine instead!
+</code></pre><p>读取文件数据</p>
+<pre><code>import io
+
+with open(&apos;photo.jpg&apos;, &apos;rb&apos;) as inf:
+    jpgdata = inf.read()
+</code></pre><ul>
+<li>如果你想读取文件，传入r</li>
+<li>如果你想读取并写入文件，传入r+</li>
+<li>如果你想覆盖写入文件，传入w</li>
+<li>如果你想在文件末尾附加内容，传入a</li>
+</ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>配置好环境，浏览下语法，掌握了方法，应该就可以开搞了。</p>
 
         
@@ -264,6 +359,36 @@ var b = a
 b += [9]
 a
 b
+</code></pre></li>
+</ul>
+<ul>
+<li><p>永远不要定义可变类型的参数    </p>
+<pre><code>&gt;&gt;&gt; def add_to(num, target=[]):
+...     target.append(num)
+...     return target
+... 
+&gt;&gt;&gt; add_to(1)
+[1]
+&gt;&gt;&gt; add_to(2)
+[1, 2]
+</code></pre></li>
+</ul>
+<h2 id="内置函数之语法糖"><a href="#内置函数之语法糖" class="headerlink" title="内置函数之语法糖"></a>内置函数之语法糖</h2><ul>
+<li><p>列表生成式</p>
+<pre><code>[x for x in range(5) if x % 2 == 0]
+</code></pre></li>
+<li><p>map, filter, reduce</p>
+<pre><code>list(map(lambda x:x*2, range(5)))
+list(filter(lambda x:x &gt; 3, range(5)))
+</code></pre></li>
+<li><p>sorted</p>
+<pre><code>&gt;&gt;&gt; L = [(&apos;Bob&apos;, 75), (&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Lisa&apos;, 88)]
+&gt;&gt;&gt; def by_name(t):
+...     return t[0].lower()
+... 
+&gt;&gt;&gt; l1 = sorted(L, key=by_name)
+&gt;&gt;&gt; l1
+[(&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Bob&apos;, 75), (&apos;Lisa&apos;, 88)]
 </code></pre></li>
 </ul>
 
@@ -818,7 +943,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		  
 		
 		  
-			<li><a href="/categories/Python/" title="Python">Python<sup>2</sup></a></li>
+			<li><a href="/categories/Python/" title="Python">Python<sup>3</sup></a></li>
 		  
 		
 		  
@@ -835,6 +960,10 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>2</sup></a></li>
 			
 		
@@ -848,10 +977,6 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 			
 				<li><a href="/tags/ios/" title="ios">ios<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Python/" title="Python">Python<sup>2</sup></a></li>
 			
 		
 			

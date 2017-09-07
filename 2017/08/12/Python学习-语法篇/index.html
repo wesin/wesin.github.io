@@ -17,7 +17,16 @@ var a = [1, 2, 4]
 var b = a
 b += [9]
 a
-b">
+b
+
+
+
+永远不要定义可变类型的参数    
+&amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
+...     target.append(num)
+...     return target
+... 
+&amp;gt;&amp;gt;&amp;gt; ad">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python学习-语法篇">
 <meta property="og:url" content="http://wesin.github.io/2017/08/12/Python学习-语法篇/index.html">
@@ -28,8 +37,17 @@ var a = [1, 2, 4]
 var b = a
 b += [9]
 a
-b">
-<meta property="og:updated_time" content="2017-08-12T06:19:22.000Z">
+b
+
+
+
+永远不要定义可变类型的参数    
+&amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
+...     target.append(num)
+...     return target
+... 
+&amp;gt;&amp;gt;&amp;gt; ad">
+<meta property="og:updated_time" content="2017-08-29T07:38:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python学习-语法篇">
 <meta name="twitter:description" content="语法引用类型和值类型
@@ -38,7 +56,16 @@ var a = [1, 2, 4]
 var b = a
 b += [9]
 a
-b">
+b
+
+
+
+永远不要定义可变类型的参数    
+&amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
+...     target.append(num)
+...     return target
+... 
+&amp;gt;&amp;gt;&amp;gt; ad">
 
     
     
@@ -112,7 +139,7 @@ b">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li></ol></li></ol>
 		
 		</div>
 		
@@ -123,6 +150,36 @@ var b = a
 b += [9]
 a
 b
+</code></pre></li>
+</ul>
+<ul>
+<li><p>永远不要定义可变类型的参数    </p>
+<pre><code>&gt;&gt;&gt; def add_to(num, target=[]):
+...     target.append(num)
+...     return target
+... 
+&gt;&gt;&gt; add_to(1)
+[1]
+&gt;&gt;&gt; add_to(2)
+[1, 2]
+</code></pre></li>
+</ul>
+<h2 id="内置函数之语法糖"><a href="#内置函数之语法糖" class="headerlink" title="内置函数之语法糖"></a>内置函数之语法糖</h2><ul>
+<li><p>列表生成式</p>
+<pre><code>[x for x in range(5) if x % 2 == 0]
+</code></pre></li>
+<li><p>map, filter, reduce</p>
+<pre><code>list(map(lambda x:x*2, range(5)))
+list(filter(lambda x:x &gt; 3, range(5)))
+</code></pre></li>
+<li><p>sorted</p>
+<pre><code>&gt;&gt;&gt; L = [(&apos;Bob&apos;, 75), (&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Lisa&apos;, 88)]
+&gt;&gt;&gt; def by_name(t):
+...     return t[0].lower()
+... 
+&gt;&gt;&gt; l1 = sorted(L, key=by_name)
+&gt;&gt;&gt; l1
+[(&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Bob&apos;, 75), (&apos;Lisa&apos;, 88)]
 </code></pre></li>
 </ul>
   
@@ -213,7 +270,7 @@ b
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li></ol></li></ol>
  
   </div>
 
@@ -241,7 +298,7 @@ b
 		  
 		
 		  
-			<li><a href="/categories/Python/" title="Python">Python<sup>2</sup></a></li>
+			<li><a href="/categories/Python/" title="Python">Python<sup>3</sup></a></li>
 		  
 		
 		  
@@ -258,6 +315,10 @@ b
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>2</sup></a></li>
 			
 		
@@ -271,10 +332,6 @@ b
 		
 			
 				<li><a href="/tags/ios/" title="ios">ios<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Python/" title="Python">Python<sup>2</sup></a></li>
 			
 		
 			

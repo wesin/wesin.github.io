@@ -23,7 +23,7 @@ pip安装对应的python版本依赖库sudo pyth">
 #!/usr/local/bin/python3
 设置可执行的脚本权限chmod +x xxxx.py
 pip安装对应的python版本依赖库sudo pyth">
-<meta property="og:updated_time" content="2017-08-12T06:18:53.000Z">
+<meta property="og:updated_time" content="2017-08-29T07:42:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python学习-方法篇">
 <meta name="twitter:description" content="初始化篇环境配置mac本身自带了python版本，but是python2.x版本，如果有强迫症喜欢使用最新版本的可以安装python3。我这边安装在了/usr/local/bin,这个一般是在脚本文件第一行声明，表示使用python版本。
@@ -103,7 +103,7 @@ pip安装对应的python版本依赖库sudo pyth">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化篇"><span class="toc-number">1.</span> <span class="toc-text">初始化篇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境配置"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置可执行的脚本权限"><span class="toc-number">1.2.</span> <span class="toc-text">设置可执行的脚本权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pip安装对应的python版本依赖库"><span class="toc-number">1.3.</span> <span class="toc-text">pip安装对应的python版本依赖库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.4.</span> <span class="toc-text">工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#语法学习"><span class="toc-number">2.</span> <span class="toc-text">语法学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方法篇"><span class="toc-number">3.</span> <span class="toc-text">方法篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看对象方法"><span class="toc-number">3.0.1.</span> <span class="toc-text">查看对象方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看方法使用"><span class="toc-number">3.0.2.</span> <span class="toc-text">查看方法使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内置函数"><span class="toc-number">3.0.3.</span> <span class="toc-text">内置函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化篇"><span class="toc-number">1.</span> <span class="toc-text">初始化篇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境配置"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置可执行的脚本权限"><span class="toc-number">1.2.</span> <span class="toc-text">设置可执行的脚本权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pip安装对应的python版本依赖库"><span class="toc-number">1.3.</span> <span class="toc-text">pip安装对应的python版本依赖库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.4.</span> <span class="toc-text">工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#语法学习"><span class="toc-number">2.</span> <span class="toc-text">语法学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方法篇"><span class="toc-number">3.</span> <span class="toc-text">方法篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看对象方法"><span class="toc-number">3.0.1.</span> <span class="toc-text">查看对象方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看方法使用"><span class="toc-number">3.0.2.</span> <span class="toc-text">查看方法使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内置函数"><span class="toc-number">3.0.3.</span> <span class="toc-text">内置函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#技能"><span class="toc-number">4.</span> <span class="toc-text">技能</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
 		
 		</div>
 		
@@ -125,6 +125,36 @@ pip安装对应的python版本依赖库sudo pyth">
 <pre><code>help(a.count)
 </code></pre><h3 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h3><p>例如 len(array)来获取列表长度这种，习惯了array.count无脑写法的，表示心累。</p>
 <p><a href="http://www.runoob.com/python/python-built-in-functions.html" target="_blank" rel="external">http://www.runoob.com/python/python-built-in-functions.html</a></p>
+<h1 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h1><p>定位脚本性能瓶颈</p>
+<pre><code>python -m cProfile my_script.py
+</code></pre><p>csv转json</p>
+<pre><code>python -c &quot;import csv,json;print json.dumps(list(csv.reader(open(&apos;csv_file.csv&apos;))))
+</code></pre><p>yield 接收输入</p>
+<pre><code>def grep(pattern):
+    print(&quot;Searching for&quot;, pattern)
+    while True:
+        line = (yield)
+        if pattern in line:
+            print(line)
+
+search = grep(&apos;coroutine&apos;)
+next(search)
+#output: Searching for coroutine
+search.send(&quot;I love you&quot;)
+search.send(&quot;Don&apos;t you love me?&quot;)
+search.send(&quot;I love coroutine instead!&quot;)
+#output: I love coroutine instead!
+</code></pre><p>读取文件数据</p>
+<pre><code>import io
+
+with open(&apos;photo.jpg&apos;, &apos;rb&apos;) as inf:
+    jpgdata = inf.read()
+</code></pre><ul>
+<li>如果你想读取文件，传入r</li>
+<li>如果你想读取并写入文件，传入r+</li>
+<li>如果你想覆盖写入文件，传入w</li>
+<li>如果你想在文件末尾附加内容，传入a</li>
+</ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>配置好环境，浏览下语法，掌握了方法，应该就可以开搞了。</p>
   
 	</div>
@@ -214,7 +244,7 @@ pip安装对应的python版本依赖库sudo pyth">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化篇"><span class="toc-number">1.</span> <span class="toc-text">初始化篇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境配置"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置可执行的脚本权限"><span class="toc-number">1.2.</span> <span class="toc-text">设置可执行的脚本权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pip安装对应的python版本依赖库"><span class="toc-number">1.3.</span> <span class="toc-text">pip安装对应的python版本依赖库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.4.</span> <span class="toc-text">工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#语法学习"><span class="toc-number">2.</span> <span class="toc-text">语法学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方法篇"><span class="toc-number">3.</span> <span class="toc-text">方法篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看对象方法"><span class="toc-number">3.0.1.</span> <span class="toc-text">查看对象方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看方法使用"><span class="toc-number">3.0.2.</span> <span class="toc-text">查看方法使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内置函数"><span class="toc-number">3.0.3.</span> <span class="toc-text">内置函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化篇"><span class="toc-number">1.</span> <span class="toc-text">初始化篇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境配置"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置可执行的脚本权限"><span class="toc-number">1.2.</span> <span class="toc-text">设置可执行的脚本权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pip安装对应的python版本依赖库"><span class="toc-number">1.3.</span> <span class="toc-text">pip安装对应的python版本依赖库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.4.</span> <span class="toc-text">工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#语法学习"><span class="toc-number">2.</span> <span class="toc-text">语法学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方法篇"><span class="toc-number">3.</span> <span class="toc-text">方法篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看对象方法"><span class="toc-number">3.0.1.</span> <span class="toc-text">查看对象方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看方法使用"><span class="toc-number">3.0.2.</span> <span class="toc-text">查看方法使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内置函数"><span class="toc-number">3.0.3.</span> <span class="toc-text">内置函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#技能"><span class="toc-number">4.</span> <span class="toc-text">技能</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
  
   </div>
 
@@ -242,7 +272,7 @@ pip安装对应的python版本依赖库sudo pyth">
 		  
 		
 		  
-			<li><a href="/categories/Python/" title="Python">Python<sup>2</sup></a></li>
+			<li><a href="/categories/Python/" title="Python">Python<sup>3</sup></a></li>
 		  
 		
 		  
@@ -259,6 +289,10 @@ pip安装对应的python版本依赖库sudo pyth">
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>2</sup></a></li>
 			
 		
@@ -272,10 +306,6 @@ pip安装对应的python版本依赖库sudo pyth">
 		
 			
 				<li><a href="/tags/ios/" title="ios">ios<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Python/" title="Python">Python<sup>2</sup></a></li>
 			
 		
 			
