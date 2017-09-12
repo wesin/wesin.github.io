@@ -391,7 +391,14 @@ list(filter(lambda x:x &gt; 3, range(5)))
 [(&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Bob&apos;, 75), (&apos;Lisa&apos;, 88)]
 </code></pre></li>
 </ul>
-
+<h2 id="踩坑pymysql"><a href="#踩坑pymysql" class="headerlink" title="踩坑pymysql"></a>踩坑pymysql</h2><ul>
+<li>%d format: a number is required, not str</li>
+</ul>
+<p>报错sql语句:</p>
+<pre><code>insert into sections(id, bookid, name, seq, url) values(&quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%d,&quot;%s&quot;)&apos;
+</code></pre><p>正确sql语句:</p>
+<pre><code>insert into sections(id, bookid, name, seq, url) values(&quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%s,&quot;%s&quot;)&apos;
+</code></pre>
         
         
         <p class="article-more-link">

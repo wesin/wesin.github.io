@@ -47,7 +47,7 @@ b
 ...     return target
 ... 
 &amp;gt;&amp;gt;&amp;gt; ad">
-<meta property="og:updated_time" content="2017-08-29T07:38:32.000Z">
+<meta property="og:updated_time" content="2017-09-12T07:24:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python学习-语法篇">
 <meta name="twitter:description" content="语法引用类型和值类型
@@ -139,7 +139,7 @@ b
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.3.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
 		
 		</div>
 		
@@ -182,7 +182,14 @@ list(filter(lambda x:x &gt; 3, range(5)))
 [(&apos;Adam&apos;, 92), (&apos;Bart&apos;, 66), (&apos;Bob&apos;, 75), (&apos;Lisa&apos;, 88)]
 </code></pre></li>
 </ul>
-  
+<h2 id="踩坑pymysql"><a href="#踩坑pymysql" class="headerlink" title="踩坑pymysql"></a>踩坑pymysql</h2><ul>
+<li>%d format: a number is required, not str</li>
+</ul>
+<p>报错sql语句:</p>
+<pre><code>insert into sections(id, bookid, name, seq, url) values(&quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%d,&quot;%s&quot;)&apos;
+</code></pre><p>正确sql语句:</p>
+<pre><code>insert into sections(id, bookid, name, seq, url) values(&quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;,%s,&quot;%s&quot;)&apos;
+</code></pre>  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
@@ -270,7 +277,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.3.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
  
   </div>
 
