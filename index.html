@@ -79,6 +79,184 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2017/10/11/Swift4踩坑记/" title="Swift4踩坑记" itemprop="url">Swift4踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2017-10-11T01:29:05.000Z" itemprop="datePublished"> 发表于 2017-10-11</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>: 时隔一年差一个月，xcode9也出来了，swift4也升级了。犹记得上次swift3代码升级的惊悚场景，这次心中默默打了个底，一定不能手贱，一定要在xcode9.1出来我再升级。然而终究抵不住心中的好奇升级了，升级，升级了……幸好，幸好，相比xcode8，xcode9真是良心了。犹记得xcode8.0出来我是等了一个月xcode8.1出来我才能发版的，等的感觉要被公司辞退了T.T。</p>
+<p>忆苦思甜过后，细数下代码升级中遇到的坑吧。</p>
+<h1 id="各种姿势的-objc-objcMembers"><a href="#各种姿势的-objc-objcMembers" class="headerlink" title="各种姿势的@objc @objcMembers"></a>各种姿势的@objc @objcMembers</h1><h2 id="objc"><a href="#objc" class="headerlink" title="@objc"></a>@objc</h2><p>swift4里面所有的<strong>#selector(action)</strong> <em>action</em>方法都要加上@objc标记，资料说是为了兼容object-c代码。代码里面<strong>#selector</strong>的普及率还是相当高的，一个个改的手残。</p>
+<h2 id="objcMembers"><a href="#objcMembers" class="headerlink" title="@objcMembers"></a>@objcMembers</h2><p>swift4里面NSObject的取值方法value(forkey)方法会造成运行时崩溃，有很多对象copy用了反射的免不得都会崩溃。然而编译器不会提示你代码错了。这里简单点处理可以给class对象添加@objcMembers标记, 也可以给属性添加@objc dynamic，realm就这是这么做的，当然所有realm数据库对象也得要改造下</p>
+<pre><code>@objcMembers
+class StockDetailItem:NSObject {
+    @objc dynamic var title = &quot;&quot;
+    @objc dynamic var quantity = 0.0
+    var actualNum = 0.0
+    var fulllessNum = 0.0
+
+    override init() {
+        super.init()
+    }
+
+}
+
+let item = StockDetailItem()
+item.title = &quot;haha&quot;
+item.value(forKey: &quot;title&quot;)
+item.value(forKey: &quot;quantity&quot;)
+</code></pre><p>这个代码修改也挺多，为了对象copy简便，自己写了个反射方法</p>
+<h1 id="swift3遗留的tableview-delegate坑"><a href="#swift3遗留的tableview-delegate坑" class="headerlink" title="swift3遗留的tableview delegate坑"></a>swift3遗留的tableview delegate坑</h1><p>在swift3里面大部分代理函数名称都简化了，比如</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>原来是</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>问题是不是所有的代理方法都改造，还落了几个 didselect 和canedit 这几个方法还是老样子，swift4里面全简化了。然而也没有警告或者错误提示。</p>
+<h1 id="扫描功能没反应了"><a href="#扫描功能没反应了" class="headerlink" title="扫描功能没反应了"></a>扫描功能没反应了</h1><p>切了swift4之后扫码全部失效了。一脸茫然，代码也没有任何错误提示。幸好stackoverflow上的有个解答，原来是代理方法名改了。</p>
+<pre><code>func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!)
+</code></pre><p>改成了</p>
+<pre><code>func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection)
+</code></pre><h1 id="ipad上自定义UIBarButtonItem显示位置异常"><a href="#ipad上自定义UIBarButtonItem显示位置异常" class="headerlink" title="ipad上自定义UIBarButtonItem显示位置异常"></a>ipad上自定义UIBarButtonItem显示位置异常</h1><p>一般这种显示异常的按钮都是自定义的customview。使用正常的UIBarButtonItem是没问题的.</p>
+<p>如果确定要使用CustomView，需要专门设置view的intrinsicContentSize, 也就是设置大小即可。<br>参考代码如下</p>
+<ul>
+<li><p>intrinsicContentSize是只读属性，需要继承后重写</p>
+<pre><code>class CommonNavigationView: UIView {
+
+    init(size: CGSize) {
+        super.init(frame: CGRect(origin: CGPoint.zero, size: size))
+        self.overrideSize = size
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError(&quot;init(coder:) has not been implemented&quot;)
+    }
+
+    lazy var overrideSize = CGSize.zero
+
+    override var intrinsicContentSize: CGSize {
+        get {
+            return overrideSize
+        }
+    }
+}
+</code></pre></li>
+</ul>
+<ul>
+<li><p>放上个UIBarButton的扩展，这里使用Cartography做约束</p>
+<pre><code>import Cartography
+
+extension UIBarButtonItem {
+    enum Style {
+        case left
+        case right
+    }
+
+    convenience init(style: Style, customView: UIView, target:Any, action: Selector) {
+        let backView = CommonNavigationView(size: CGSize(width: 44, height: 44))
+        backView.addSubview(customView)
+        let gesturer = UITapGestureRecognizer(target: target, action: action)
+        backView.addGestureRecognizer(gesturer)
+        constrain(customView) {
+            imgv in
+            if style == .left {
+                imgv.left == imgv.superview!.left
+            } else {
+                imgv.right == imgv.superview!.right
+            }
+            imgv.centerY == imgv.superview!.centerY
+            imgv.width == 25
+            imgv.height == 25
+        }
+        self.init(customView: backView)
+    }
+
+    convenience init(style: Style, img: UIImage, target:Any, action: Selector) {
+        let backView = CommonNavigationView(size: CGSize(width: 44, height: 44))
+        let imgView = UIImageView(image: img)
+        backView.addSubview(imgView)
+        let gesturer = UITapGestureRecognizer(target: target, action: action)
+        backView.addGestureRecognizer(gesturer)
+        constrain(imgView) {
+            imgv in
+            if style == .left {
+                imgv.left == imgv.superview!.left
+            } else {
+                imgv.right == imgv.superview!.right
+            }
+            imgv.centerY == imgv.superview!.centerY
+            imgv.width == 25
+            imgv.height == 25
+        }
+        self.init(customView: backView)
+    }
+}
+</code></pre></li>
+</ul>
+<h1 id="UITableView-顶部莫名留白"><a href="#UITableView-顶部莫名留白" class="headerlink" title="UITableView 顶部莫名留白"></a>UITableView 顶部莫名留白</h1><p>网上还是挺多解释的，然而基本都不适用，研究了好久，关闭行高估算， 设置头部高度。两者缺一不可</p>
+<pre><code>tableView.estimatedRowHeight = 0
+tableView.estimatedSectionHeaderHeight = 0
+tableView.estimatedSectionFooterHeight = 0
+
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -&gt; CGFloat {
+    return 0.1
+}
+</code></pre><p>就先这样吧，祝各位升级愉快！</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift4/">Swift4</a><a href="/tags/Xcode9/">Xcode9</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2017/10/11/Swift4踩坑记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2017/10/11/Swift4踩坑记/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2017/08/18/Python学习-实战篇/" title="Python学习-实战篇" itemprop="url">Python学习-实战篇</a>
   </h1>
   <p class="article-author">By
@@ -352,7 +530,11 @@ with open(&apos;photo.jpg&apos;, &apos;rb&apos;) as inf:
 </header>
     <div class="article-content">
         
-        <h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="引用类型和值类型"><a href="#引用类型和值类型" class="headerlink" title="引用类型和值类型"></a>引用类型和值类型</h2><ul>
+        <h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li>万物皆是对象</li>
+<li>属性就是对象的字典</li>
+</ul>
+<h2 id="引用类型和值类型"><a href="#引用类型和值类型" class="headerlink" title="引用类型和值类型"></a>引用类型和值类型</h2><ul>
 <li><p>踩坑版之从Swift过来操作数组</p>
 <pre><code>var a = [1, 2, 4]
 var b = a
@@ -954,7 +1136,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		  
 		
 		  
-			<li><a href="/categories/ios/" title="ios">ios<sup>3</sup></a></li>
+			<li><a href="/categories/ios/" title="ios">ios<sup>4</sup></a></li>
 		  
 		
 		</ul>
@@ -967,7 +1149,15 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/ios/" title="ios">ios<sup>3</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -979,19 +1169,19 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
-				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/ios/" title="ios">ios<sup>2</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
 			
 		
 			

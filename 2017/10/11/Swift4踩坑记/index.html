@@ -1,0 +1,613 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Swift4踩坑记 | Wesin&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Wesin">
+    
+
+    
+    <meta name="description" content="ps: 时隔一年差一个月，xcode9也出来了，swift4也升级了。犹记得上次swift3代码升级的惊悚场景，这次心中默默打了个底，一定不能手贱，一定要在xcode9.1出来我再升级。然而终究抵不住心中的好奇升级了，升级，升级了……幸好，幸好，相比xcode8，xcode9真是良心了。犹记得xcode8.0出来我是等了一个月xcode8.1出来我才能发版的，等的感觉要被公司辞退了T.T。
+忆苦思">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift4踩坑记">
+<meta property="og:url" content="http://wesin.github.io/2017/10/11/Swift4踩坑记/index.html">
+<meta property="og:site_name" content="Wesin's blog">
+<meta property="og:description" content="ps: 时隔一年差一个月，xcode9也出来了，swift4也升级了。犹记得上次swift3代码升级的惊悚场景，这次心中默默打了个底，一定不能手贱，一定要在xcode9.1出来我再升级。然而终究抵不住心中的好奇升级了，升级，升级了……幸好，幸好，相比xcode8，xcode9真是良心了。犹记得xcode8.0出来我是等了一个月xcode8.1出来我才能发版的，等的感觉要被公司辞退了T.T。
+忆苦思">
+<meta property="og:updated_time" content="2017-10-11T07:06:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift4踩坑记">
+<meta name="twitter:description" content="ps: 时隔一年差一个月，xcode9也出来了，swift4也升级了。犹记得上次swift3代码升级的惊悚场景，这次心中默默打了个底，一定不能手贱，一定要在xcode9.1出来我再升级。然而终究抵不住心中的好奇升级了，升级，升级了……幸好，幸好，相比xcode8，xcode9真是良心了。犹记得xcode8.0出来我是等了一个月xcode8.1出来我才能发版的，等的感觉要被公司辞退了T.T。
+忆苦思">
+
+    
+    
+    <link rel="icon" href="/img/cat.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/bigcat.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/bigcat.png">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Wesin&#39;s blog">Wesin&#39;s blog</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:wesin.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/10/11/Swift4踩坑记/" title="Swift4踩坑记" itemprop="url">Swift4踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  <p class="article-time">
+    <time datetime="2017-10-11T01:29:05.000Z" itemprop="datePublished"> 发表于 2017-10-11</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#各种姿势的-objc-objcMembers"><span class="toc-number">1.</span> <span class="toc-text">各种姿势的@objc @objcMembers</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#objc"><span class="toc-number">1.1.</span> <span class="toc-text">@objc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#objcMembers"><span class="toc-number">1.2.</span> <span class="toc-text">@objcMembers</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#swift3遗留的tableview-delegate坑"><span class="toc-number">2.</span> <span class="toc-text">swift3遗留的tableview delegate坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#扫描功能没反应了"><span class="toc-number">3.</span> <span class="toc-text">扫描功能没反应了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ipad上自定义UIBarButtonItem显示位置异常"><span class="toc-number">4.</span> <span class="toc-text">ipad上自定义UIBarButtonItem显示位置异常</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#UITableView-顶部莫名留白"><span class="toc-number">5.</span> <span class="toc-text">UITableView 顶部莫名留白</span></a></li></ol>
+		
+		</div>
+		
+		<p><strong>ps</strong>: 时隔一年差一个月，xcode9也出来了，swift4也升级了。犹记得上次swift3代码升级的惊悚场景，这次心中默默打了个底，一定不能手贱，一定要在xcode9.1出来我再升级。然而终究抵不住心中的好奇升级了，升级，升级了……幸好，幸好，相比xcode8，xcode9真是良心了。犹记得xcode8.0出来我是等了一个月xcode8.1出来我才能发版的，等的感觉要被公司辞退了T.T。</p>
+<p>忆苦思甜过后，细数下代码升级中遇到的坑吧。</p>
+<h1 id="各种姿势的-objc-objcMembers"><a href="#各种姿势的-objc-objcMembers" class="headerlink" title="各种姿势的@objc @objcMembers"></a>各种姿势的@objc @objcMembers</h1><h2 id="objc"><a href="#objc" class="headerlink" title="@objc"></a>@objc</h2><p>swift4里面所有的<strong>#selector(action)</strong> <em>action</em>方法都要加上@objc标记，资料说是为了兼容object-c代码。代码里面<strong>#selector</strong>的普及率还是相当高的，一个个改的手残。</p>
+<h2 id="objcMembers"><a href="#objcMembers" class="headerlink" title="@objcMembers"></a>@objcMembers</h2><p>swift4里面NSObject的取值方法value(forkey)方法会造成运行时崩溃，有很多对象copy用了反射的免不得都会崩溃。然而编译器不会提示你代码错了。这里简单点处理可以给class对象添加@objcMembers标记, 也可以给属性添加@objc dynamic，realm就这是这么做的，当然所有realm数据库对象也得要改造下</p>
+<pre><code>@objcMembers
+class StockDetailItem:NSObject {
+    @objc dynamic var title = &quot;&quot;
+    @objc dynamic var quantity = 0.0
+    var actualNum = 0.0
+    var fulllessNum = 0.0
+
+    override init() {
+        super.init()
+    }
+
+}
+
+let item = StockDetailItem()
+item.title = &quot;haha&quot;
+item.value(forKey: &quot;title&quot;)
+item.value(forKey: &quot;quantity&quot;)
+</code></pre><p>这个代码修改也挺多，为了对象copy简便，自己写了个反射方法</p>
+<h1 id="swift3遗留的tableview-delegate坑"><a href="#swift3遗留的tableview-delegate坑" class="headerlink" title="swift3遗留的tableview delegate坑"></a>swift3遗留的tableview delegate坑</h1><p>在swift3里面大部分代理函数名称都简化了，比如</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>原来是</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>问题是不是所有的代理方法都改造，还落了几个 didselect 和canedit 这几个方法还是老样子，swift4里面全简化了。然而也没有警告或者错误提示。</p>
+<h1 id="扫描功能没反应了"><a href="#扫描功能没反应了" class="headerlink" title="扫描功能没反应了"></a>扫描功能没反应了</h1><p>切了swift4之后扫码全部失效了。一脸茫然，代码也没有任何错误提示。幸好stackoverflow上的有个解答，原来是代理方法名改了。</p>
+<pre><code>func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!)
+</code></pre><p>改成了</p>
+<pre><code>func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection)
+</code></pre><h1 id="ipad上自定义UIBarButtonItem显示位置异常"><a href="#ipad上自定义UIBarButtonItem显示位置异常" class="headerlink" title="ipad上自定义UIBarButtonItem显示位置异常"></a>ipad上自定义UIBarButtonItem显示位置异常</h1><p>一般这种显示异常的按钮都是自定义的customview。使用正常的UIBarButtonItem是没问题的.</p>
+<p>如果确定要使用CustomView，需要专门设置view的intrinsicContentSize, 也就是设置大小即可。<br>参考代码如下</p>
+<ul>
+<li><p>intrinsicContentSize是只读属性，需要继承后重写</p>
+<pre><code>class CommonNavigationView: UIView {
+
+    init(size: CGSize) {
+        super.init(frame: CGRect(origin: CGPoint.zero, size: size))
+        self.overrideSize = size
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError(&quot;init(coder:) has not been implemented&quot;)
+    }
+
+    lazy var overrideSize = CGSize.zero
+
+    override var intrinsicContentSize: CGSize {
+        get {
+            return overrideSize
+        }
+    }
+}
+</code></pre></li>
+</ul>
+<ul>
+<li><p>放上个UIBarButton的扩展，这里使用Cartography做约束</p>
+<pre><code>import Cartography
+
+extension UIBarButtonItem {
+    enum Style {
+        case left
+        case right
+    }
+
+    convenience init(style: Style, customView: UIView, target:Any, action: Selector) {
+        let backView = CommonNavigationView(size: CGSize(width: 44, height: 44))
+        backView.addSubview(customView)
+        let gesturer = UITapGestureRecognizer(target: target, action: action)
+        backView.addGestureRecognizer(gesturer)
+        constrain(customView) {
+            imgv in
+            if style == .left {
+                imgv.left == imgv.superview!.left
+            } else {
+                imgv.right == imgv.superview!.right
+            }
+            imgv.centerY == imgv.superview!.centerY
+            imgv.width == 25
+            imgv.height == 25
+        }
+        self.init(customView: backView)
+    }
+
+    convenience init(style: Style, img: UIImage, target:Any, action: Selector) {
+        let backView = CommonNavigationView(size: CGSize(width: 44, height: 44))
+        let imgView = UIImageView(image: img)
+        backView.addSubview(imgView)
+        let gesturer = UITapGestureRecognizer(target: target, action: action)
+        backView.addGestureRecognizer(gesturer)
+        constrain(imgView) {
+            imgv in
+            if style == .left {
+                imgv.left == imgv.superview!.left
+            } else {
+                imgv.right == imgv.superview!.right
+            }
+            imgv.centerY == imgv.superview!.centerY
+            imgv.width == 25
+            imgv.height == 25
+        }
+        self.init(customView: backView)
+    }
+}
+</code></pre></li>
+</ul>
+<h1 id="UITableView-顶部莫名留白"><a href="#UITableView-顶部莫名留白" class="headerlink" title="UITableView 顶部莫名留白"></a>UITableView 顶部莫名留白</h1><p>网上还是挺多解释的，然而基本都不适用，研究了好久，关闭行高估算， 设置头部高度。两者缺一不可</p>
+<pre><code>tableView.estimatedRowHeight = 0
+tableView.estimatedSectionHeaderHeight = 0
+tableView.estimatedSectionFooterHeight = 0
+
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -&gt; CGFloat {
+    return 0.1
+}
+</code></pre><p>就先这样吧，祝各位升级愉快！</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift4/">Swift4</a><a href="/tags/Xcode9/">Xcode9</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2017/08/18/Python学习-实战篇/"  title="Python学习-实战篇">
+ <strong>下一篇：</strong><br/> 
+ <span>Python学习-实战篇
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2017/10/11/Swift4踩坑记/" data-title="Swift4踩坑记" data-url="http://wesin.github.io/2017/10/11/Swift4踩坑记/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#各种姿势的-objc-objcMembers"><span class="toc-number">1.</span> <span class="toc-text">各种姿势的@objc @objcMembers</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#objc"><span class="toc-number">1.1.</span> <span class="toc-text">@objc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#objcMembers"><span class="toc-number">1.2.</span> <span class="toc-text">@objcMembers</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#swift3遗留的tableview-delegate坑"><span class="toc-number">2.</span> <span class="toc-text">swift3遗留的tableview delegate坑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#扫描功能没反应了"><span class="toc-number">3.</span> <span class="toc-text">扫描功能没反应了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ipad上自定义UIBarButtonItem显示位置异常"><span class="toc-number">4.</span> <span class="toc-text">ipad上自定义UIBarButtonItem显示位置异常</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#UITableView-顶部莫名留白"><span class="toc-number">5.</span> <span class="toc-text">UITableView 顶部莫名留白</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github 名片</p>
+<div class="github-card" data-github="wesin" data-width="220" data-height="119" data-theme="medium">
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+  </div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/PM/" title="PM">PM<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Python/" title="Python">Python<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/ios/" title="ios">ios<sup>4</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/ios/" title="ios">ios<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift3/" title="Swift3">Swift3<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode8/" title="Xcode8">Xcode8<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/UML/" title="UML">UML<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://www.github.com" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="undefined" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
+    <!-- <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=86 src="http://music.163.com/outchain/player?type=2&id=412902950&auto=1&height=66"></iframe> -->
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Wesin in Hunpun. <br/>
+			风也如是,雨也如梦.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/he8706799" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/wesin" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="Wesin">Wesin</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wesin"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

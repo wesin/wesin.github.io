@@ -11,7 +11,11 @@
     
 
     
-    <meta name="description" content="语法引用类型和值类型
+    <meta name="description" content="语法类
+万物皆是对象
+属性就是对象的字典
+
+引用类型和值类型
 踩坑版之从Swift过来操作数组
 var a = [1, 2, 4]
 var b = a
@@ -24,14 +28,16 @@ b
 永远不要定义可变类型的参数    
 &amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
 ...     target.append(num)
-...     return target
-... 
-&amp;gt;&amp;gt;&amp;gt; ad">
+...     return target">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python学习-语法篇">
 <meta property="og:url" content="http://wesin.github.io/2017/08/12/Python学习-语法篇/index.html">
 <meta property="og:site_name" content="Wesin's blog">
-<meta property="og:description" content="语法引用类型和值类型
+<meta property="og:description" content="语法类
+万物皆是对象
+属性就是对象的字典
+
+引用类型和值类型
 踩坑版之从Swift过来操作数组
 var a = [1, 2, 4]
 var b = a
@@ -44,13 +50,15 @@ b
 永远不要定义可变类型的参数    
 &amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
 ...     target.append(num)
-...     return target
-... 
-&amp;gt;&amp;gt;&amp;gt; ad">
-<meta property="og:updated_time" content="2017-09-12T07:24:38.000Z">
+...     return target">
+<meta property="og:updated_time" content="2017-09-12T07:36:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python学习-语法篇">
-<meta name="twitter:description" content="语法引用类型和值类型
+<meta name="twitter:description" content="语法类
+万物皆是对象
+属性就是对象的字典
+
+引用类型和值类型
 踩坑版之从Swift过来操作数组
 var a = [1, 2, 4]
 var b = a
@@ -63,9 +71,7 @@ b
 永远不要定义可变类型的参数    
 &amp;gt;&amp;gt;&amp;gt; def add_to(num, target=[]):
 ...     target.append(num)
-...     return target
-... 
-&amp;gt;&amp;gt;&amp;gt; ad">
+...     return target">
 
     
     
@@ -139,11 +145,15 @@ b
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.3.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">1.1.</span> <span class="toc-text">类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.2.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.3.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.4.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
 		
 		</div>
 		
-		<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="引用类型和值类型"><a href="#引用类型和值类型" class="headerlink" title="引用类型和值类型"></a>引用类型和值类型</h2><ul>
+		<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li>万物皆是对象</li>
+<li>属性就是对象的字典</li>
+</ul>
+<h2 id="引用类型和值类型"><a href="#引用类型和值类型" class="headerlink" title="引用类型和值类型"></a>引用类型和值类型</h2><ul>
 <li><p>踩坑版之从Swift过来操作数组</p>
 <pre><code>var a = [1, 2, 4]
 var b = a
@@ -277,7 +287,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.1.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.2.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.3.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">1.1.</span> <span class="toc-text">类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#引用类型和值类型"><span class="toc-number">1.2.</span> <span class="toc-text">引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内置函数之语法糖"><span class="toc-number">1.3.</span> <span class="toc-text">内置函数之语法糖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#踩坑pymysql"><span class="toc-number">1.4.</span> <span class="toc-text">踩坑pymysql</span></a></li></ol></li></ol>
  
   </div>
 
@@ -309,7 +319,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
 		  
 		
 		  
-			<li><a href="/categories/ios/" title="ios">ios<sup>3</sup></a></li>
+			<li><a href="/categories/ios/" title="ios">ios<sup>4</sup></a></li>
 		  
 		
 		</ul>
@@ -322,7 +332,15 @@ list(filter(lambda x:x &gt; 3, range(5)))
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/ios/" title="ios">ios<sup>3</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -334,19 +352,19 @@ list(filter(lambda x:x &gt; 3, range(5)))
 			
 		
 			
-				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/ios/" title="ios">ios<sup>2</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
 			
 		
 			
