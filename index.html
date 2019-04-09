@@ -1,7 +1,7 @@
 
  <!DOCTYPE HTML>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
     <title>Wesin&#39;s blog</title>
@@ -11,15 +11,13 @@
     
 
     
-    <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wesin's blog">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Wesin&#39;s blog">
 <meta property="og:url" content="http://wesin.github.io/index.html">
-<meta property="og:site_name" content="Wesin's blog">
-<meta property="og:description">
+<meta property="og:site_name" content="Wesin&#39;s blog">
+<meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wesin's blog">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Wesin&#39;s blog">
 
     
     
@@ -31,14 +29,14 @@
     
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
+</html>
   <body>
     <header>
       
 <div>
 		
 			<div id="imglogo">
-				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"/></a>
+				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"></a>
 			</div>
 			
 			<div id="textlogo">
@@ -61,17 +59,116 @@
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索">
 						<input type="hidden" name="q" value="site:wesin.github.io">
 					</form>
 					
 					</li>
 				</ul>
-			</nav>			
+			</ul></nav>			
 </div>
     </header>
     <div id="container">
       <div id="main">
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/04/09/Swift5踩坑记/" title="Swift5踩坑记" itemprop="url">Swift5踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  </p><p class="article-time">
+    <time datetime="2019-04-09T04:03:24.000Z" itemprop="datePublished"> 发表于 2019-04-09</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>: 春光如梭，一年又已过去，xcode10丝滑的过度了4.2版本。以为苹果终于给力了。然而xcode10.2的升级，Swift5的更新让我明白了一个道理，xcode10.2才是那个点，xcode10说不定只是老板催的急，临时发的一个版。</p>
+<p>闲话不多说，描述下这次遇到的问题吧。</p>
+<h1 id="HashValue-彻底不能用了"><a href="#HashValue-彻底不能用了" class="headerlink" title="HashValue 彻底不能用了"></a>HashValue 彻底不能用了</h1><p>其实这个swift4.2就已经有了新的方案，只是前面一直还能用。swift5直接编译报错了。</p>
+<p>下面就是替换方案的使用方法。</p>
+<pre><code>// swift 3
+extension Point: Equatable{
+    func ==(lhs: Testhash, rhs: Testhash) -&gt; Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+extension Point: Equatable {
+    var hashValue: Int {
+        get {
+            return self.x + self.y * self.x
+        }
+    }
+}
+
+// swift 4.2
+extension Point: Equatable {
+    static func ==(lhs: Point, rhs: Point) -&gt; Bool {
+        // Ignore distanceFromOrigin for determining equality
+        return lhs.x == rhs.x &amp;&amp; lhs.y == rhs.y
+    }
+}
+extension Point: Hashable {
+    func hash(into hasher: inout Hasher) {
+        // Ignore distanceFromOrigin for hashing
+        hasher.combine(x)
+        hasher.combine(y)
+    }
+}
+</code></pre><h1 id="大坑-release版本发布后TableView某些delegate无法触发生效"><a href="#大坑-release版本发布后TableView某些delegate无法触发生效" class="headerlink" title="大坑,release版本发布后TableView某些delegate无法触发生效"></a>大坑,release版本发布后TableView某些delegate无法触发生效</h1><p>具体描述下场景, 当TableView所创建的类没有实现某些可以不实现的代理，比如didselect， heightforrow。然后这个类被子类继承，实现了didselect、heightforheader、heightforfooter的方法。在debug模式下，代码运行很正常，点击事件，高度都能正常显示。但是打包发布后，从testflight下载过来，就有可能存在点击，tableview行焦点色会变化，但是事件没法触发的问题。或者header和footer高度不对的问题。</p>
+<p>这个问题的原因估计是编译优化做了修改导致的。</p>
+<p>最无脑的解决方案是在父类把这几个方法都写一个空的实现，子类做函数重写。亲测有效。</p>
+<p>高端解决办法，可能需要去修改一些编译选项吧，然而没测试过，有大佬搞过的也可以指导下。</p>
+<p>此问题是Xcode10.2的锅，与swift版本无关。</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift5/">Swift5</a><a href="/tags/Xcode10-2/">Xcode10.2</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2019/04/09/Swift5踩坑记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2019/04/09/Swift5踩坑记/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
 
    
     
@@ -85,7 +182,7 @@
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-10-11T01:29:05.000Z" itemprop="datePublished"> 发表于 2017-10-11</time>
     
   </p>
@@ -263,7 +360,7 @@ tableView.estimatedSectionFooterHeight = 0
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-08-18T08:03:42.000Z" itemprop="datePublished"> 发表于 2017-08-18</time>
     
   </p>
@@ -271,7 +368,7 @@ tableView.estimatedSectionFooterHeight = 0
     <div class="article-content">
         
         <h1 id="Web自动化测试方案"><a href="#Web自动化测试方案" class="headerlink" title="Web自动化测试方案"></a>Web自动化测试方案</h1><p>Python selenium phantomJS</p>
-<p><a href="http://cuiqingcai.com/2599.html" target="_blank" rel="external">http://cuiqingcai.com/2599.html</a></p>
+<p><a href="http://cuiqingcai.com/2599.html" target="_blank" rel="noopener">http://cuiqingcai.com/2599.html</a></p>
 <h1 id="运维自动化"><a href="#运维自动化" class="headerlink" title="运维自动化"></a>运维自动化</h1><p>使用 Fabric3 自动化部署 Python3 项目</p>
 
         
@@ -328,7 +425,7 @@ tableView.estimatedSectionFooterHeight = 0
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-08-14T03:19:09.000Z" itemprop="datePublished"> 发表于 2017-08-14</time>
     
   </p>
@@ -412,7 +509,7 @@ tableView.estimatedSectionFooterHeight = 0
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-08-12T03:04:28.000Z" itemprop="datePublished"> 发表于 2017-08-12</time>
     
   </p>
@@ -424,8 +521,8 @@ tableView.estimatedSectionFooterHeight = 0
 </code></pre><h2 id="设置可执行的脚本权限"><a href="#设置可执行的脚本权限" class="headerlink" title="设置可执行的脚本权限"></a>设置可执行的脚本权限</h2><pre><code>chmod +x xxxx.py
 </code></pre><h2 id="pip安装对应的python版本依赖库"><a href="#pip安装对应的python版本依赖库" class="headerlink" title="pip安装对应的python版本依赖库"></a>pip安装对应的python版本依赖库</h2><pre><code>sudo python3 -m pip install **
 </code></pre><h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><p>推荐：    Visual Studio Code </p>
-<h1 id="语法学习"><a href="#语法学习" class="headerlink" title="语法学习"></a>语法学习</h1><p>随便挑几个语法python3语法网站学习<br><a href="http://www.web3.xin/python3/107.html" target="_blank" rel="external">http://www.web3.xin/python3/107.html</a><br><a href="http://www.runoob.com/python/python-pass-statement.html" target="_blank" rel="external">http://www.runoob.com/python/python-pass-statement.html</a></p>
-<p>进阶可以阅读下<br><strong>Python进阶</strong>: <a href="https://github.com/eastlakeside/interpy-zh" target="_blank" rel="external">https://github.com/eastlakeside/interpy-zh</a></p>
+<h1 id="语法学习"><a href="#语法学习" class="headerlink" title="语法学习"></a>语法学习</h1><p>随便挑几个语法python3语法网站学习<br><a href="http://www.web3.xin/python3/107.html" target="_blank" rel="noopener">http://www.web3.xin/python3/107.html</a><br><a href="http://www.runoob.com/python/python-pass-statement.html" target="_blank" rel="noopener">http://www.runoob.com/python/python-pass-statement.html</a></p>
+<p>进阶可以阅读下<br><strong>Python进阶</strong>: <a href="https://github.com/eastlakeside/interpy-zh" target="_blank" rel="noopener">https://github.com/eastlakeside/interpy-zh</a></p>
 <h1 id="方法篇"><a href="#方法篇" class="headerlink" title="方法篇"></a>方法篇</h1><p>使用过sublime和vscode来学习和编程python，对于语法的智能提示和高亮都挺差的，so相对于java、c#、swift这种语法严谨的语言来说，编写体验极差，对新手非常不友好，经常写着写着要去翻词典。</p>
 <p>所以新手阶段免不得多练多写了。</p>
 <h3 id="查看对象方法"><a href="#查看对象方法" class="headerlink" title="查看对象方法"></a>查看对象方法</h3><pre><code>&gt;&gt;&gt; a 
@@ -436,7 +533,7 @@ tableView.estimatedSectionFooterHeight = 0
 </code></pre><p>也可以help某个方法</p>
 <pre><code>help(a.count)
 </code></pre><h3 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h3><p>例如 len(array)来获取列表长度这种，习惯了array.count无脑写法的，表示心累。</p>
-<p><a href="http://www.runoob.com/python/python-built-in-functions.html" target="_blank" rel="external">http://www.runoob.com/python/python-built-in-functions.html</a></p>
+<p><a href="http://www.runoob.com/python/python-built-in-functions.html" target="_blank" rel="noopener">http://www.runoob.com/python/python-built-in-functions.html</a></p>
 <h1 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h1><p>定位脚本性能瓶颈</p>
 <pre><code>python -m cProfile my_script.py
 </code></pre><p>csv转json</p>
@@ -523,7 +620,7 @@ with open(&apos;photo.jpg&apos;, &apos;rb&apos;) as inf:
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-08-12T03:03:50.000Z" itemprop="datePublished"> 发表于 2017-08-12</time>
     
   </p>
@@ -635,7 +732,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-01-18T06:27:20.000Z" itemprop="datePublished"> 发表于 2017-01-18</time>
     
   </p>
@@ -726,7 +823,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
     
   </p>
@@ -802,7 +899,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2016-06-13T00:55:05.000Z" itemprop="datePublished"> 发表于 2016-06-13</time>
     
   </p>
@@ -814,64 +911,27 @@ list(filter(lambda x:x &gt; 3, range(5)))
 <h1 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a>蓝牙连接</h1><blockquote>
 <p>蓝牙框架引入</p>
 </blockquote>
-<p><code>import CoreBluetooth</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> CoreBluetooth</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>创建蓝牙管理类</p>
 </blockquote>
-<p><code>lazy var blueManager:CBCentralManager? = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">lazy</span> <span class="keyword">var</span> blueManager:<span class="type">CBCentralManager?</span> = <span class="type">CBCentralManager</span>(delegate: <span class="keyword">self</span>, queue: dispatch_get_main_queue())</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>扫描可连接蓝牙</p>
 </blockquote>
-<p><code>blueManager?.scanForPeripheralsWithServices(nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey:true])</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blueManager?.scanForPeripheralsWithServices(<span class="literal">nil</span>, options: [<span class="type">CBCentralManagerScanOptionAllowDuplicatesKey</span>:<span class="literal">true</span>])</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>蓝牙处理代理类</p>
 </blockquote>
 <p>蓝牙设置开关的代理</p>
-<pre><code>func centralManagerDidUpdateState(central: CBCentralManager) {
-    switch (central.state)
-    {
-    case CBCentralManagerState.PoweredOn:
-        //当蓝牙打开时，自动扫描对应的外设
-            blueManager?.scanForPeripheralsWithServices(nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey:true])
-        }
-        break
-    default:
-        NSLog(&quot;Central Manager did change state&quot;)
-        break;
-    }
-}
-</code></pre><p>扫描监听代理，当扫描到蓝牙设备时，这里会接受到通知</p>
-<pre><code>func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-    let uuid = peripheral.identifier.UUIDString
-            print(&quot;发现设备&quot;)
-            print(uuid)
-            print(peripheral.name, advertisementData)
-    print(&quot;------------------------------------------&quot;)
-    /**
-    * 不包含服务功能
-    */
-    if advertisementData[&quot;kCBAdvDataServiceUUIDs&quot;] == nil {
-        return
-    }
-    //这里是把扫描到的不同设备保存起来，devices是自己定义的一个蓝牙设备数组
-    if devices.find({$0.peripheral?.identifier.UUIDString == uuid}) == -1 {
-        let serviceID = (advertisementData[&quot;kCBAdvDataServiceUUIDs&quot;] as? (String,String))?.1 ?? &quot;&quot;
-        devices.append(Device(name: peripheral.name ?? LS(&quot;unnamed&quot;), peripheral: peripheral, serviceUUID:serviceID)) //&quot;未命名&quot;
-    }
-
-}
-</code></pre><p>从打印机数组里面确定需要选择的打印机 调用连接代码，弱水三千，取一瓢而饮之。</p>
-<pre><code>func connectDevice(device:Device) {
-    blueManager?.stopScan()
-    currentDevice = device
-    blueManager?.connectPeripheral(device.peripheral!, options: nil)
-}
-</code></pre><p>连接打印机后，系统继续调用代理，告诉你连接结果<br>顾名思义，连不上T0T</p>
-<pre><code>func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
-    MessageShow.ShareInstance.errorMessage = error?.localizedFailureReason ?? &quot;&quot;
-    printDelegate?.selectPrinter()
-}
-</code></pre><p>连上了~，~</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManagerDidUpdateState</span><span class="params">(central: CBCentralManager)</span></span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (central.state)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">CBCentralManagerState</span>.<span class="type">PoweredOn</span>:</span><br><span class="line">        <span class="comment">//当蓝牙打开时，自动扫描对应的外设</span></span><br><span class="line">            blueManager?.scanForPeripheralsWithServices(<span class="literal">nil</span>, options: [<span class="type">CBCentralManagerScanOptionAllowDuplicatesKey</span>:<span class="literal">true</span>])</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="type">NSLog</span>(<span class="string">"Central Manager did change state"</span>)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>扫描监听代理，当扫描到蓝牙设备时，这里会接受到通知</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManager</span><span class="params">(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> uuid = peripheral.identifier.<span class="type">UUIDString</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">"发现设备"</span>)</span><br><span class="line">            <span class="built_in">print</span>(uuid)</span><br><span class="line">            <span class="built_in">print</span>(peripheral.name, advertisementData)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 不包含服务功能</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">if</span> advertisementData[<span class="string">"kCBAdvDataServiceUUIDs"</span>] == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//这里是把扫描到的不同设备保存起来，devices是自己定义的一个蓝牙设备数组</span></span><br><span class="line">    <span class="keyword">if</span> devices.<span class="built_in">find</span>(&#123;$<span class="number">0</span>.peripheral?.identifier.<span class="type">UUIDString</span> == uuid&#125;) == -<span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> serviceID = (advertisementData[<span class="string">"kCBAdvDataServiceUUIDs"</span>] <span class="keyword">as</span>? (<span class="type">String</span>,<span class="type">String</span>))?.<span class="number">1</span> ?? <span class="string">""</span></span><br><span class="line">        devices.append(<span class="type">Device</span>(name: peripheral.name ?? <span class="type">LS</span>(<span class="string">"unnamed"</span>), peripheral: peripheral, serviceUUID:serviceID)) <span class="comment">//"未命名"</span></span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从打印机数组里面确定需要选择的打印机 调用连接代码，弱水三千，取一瓢而饮之。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">connectDevice</span><span class="params">(device:Device)</span></span> &#123;</span><br><span class="line">    blueManager?.stopScan()</span><br><span class="line">    currentDevice = device</span><br><span class="line">    blueManager?.connectPeripheral(device.peripheral!, options: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>连接打印机后，系统继续调用代理，告诉你连接结果<br>顾名思义，连不上T0T</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManager</span><span class="params">(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?)</span></span> &#123;</span><br><span class="line">    <span class="type">MessageShow</span>.<span class="type">ShareInstance</span>.errorMessage = error?.localizedFailureReason ?? <span class="string">""</span></span><br><span class="line">    printDelegate?.selectPrinter()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>连上了~，~</p>
 <pre><code>func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
     noConnectedTimer?.invalidate()
     disConnectTimer?.invalidate()
@@ -1060,7 +1120,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 }
 </code></pre><p><strong>ps</strong>：还有一种直接条码打印的方式，手里打印机有限，一个渣，另外一只居然不能接受条码指令，渣打印机打不出来，所以就不写出来了。大致就是获取字符串的unicode，在指令后一起传入。没有成功~，~如果有知道的也可以补充下。</p>
 <p>最后推荐下指令集比较完整的文档：</p>
-<p><a href="http://www.docin.com/p-676248934.html" target="_blank" rel="external"> http://www.docin.com/p-676248934.html </a></p>
+<p><a href="http://www.docin.com/p-676248934.html" target="_blank" rel="noopener"> http://www.docin.com/p-676248934.html </a></p>
 
         
         
@@ -1079,7 +1139,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Swift/">Swift</a><a href="/tags/ios/">ios</a><a href="/tags/Print/">Print</a>
+  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/ios/">ios</a><a href="/tags/Swift/">Swift</a><a href="/tags/Print/">Print</a>
   </div>
 
 </div>
@@ -1116,7 +1176,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 <div class="github-card">
 <p class="asidetitle">Github 名片</p>
 <div class="github-card" data-github="wesin" data-width="220" data-height="119" data-theme="medium">
-<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
 </div>
   </div>
 
@@ -1136,7 +1196,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		  
 		
 		  
-			<li><a href="/categories/ios/" title="ios">ios<sup>4</sup></a></li>
+			<li><a href="/categories/ios/" title="ios">ios<sup>5</sup></a></li>
 		  
 		
 		</ul>
@@ -1149,15 +1209,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/ios/" title="ios">ios<sup>3</sup></a></li>
+				<li><a href="/tags/ios/" title="ios">ios<sup>4</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -1169,11 +1225,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -1190,6 +1242,22 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 			
 				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode10-2/" title="Xcode10.2">Xcode10.2<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -1218,7 +1286,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 
   <div class="weiboshow">
   <p class="asidetitle">新浪微博</p>
-    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
+    <iframe width="100%" height="119" class="share_self" frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
     <!-- <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=86 src="http://music.163.com/outchain/player?type=2&id=412902950&auto=1&height=66"></iframe> -->
 </div>
 
@@ -1226,7 +1294,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 </aside>
 </div>
     </div>
-    <footer><div id="footer" >
+    <footer><div id="footer">
 	
 	<div class="line">
 		<span></span>
@@ -1235,11 +1303,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 	
 	
 	<section class="info">
-		<p> Hello ,I&#39;m Wesin in Hunpun. <br/>
+		<p> Hello ,I&#39;m Wesin in Hunpun. <br>
 			风也如是,雨也如梦.</p>
 	</section>
 	 
-	<div class="social-font" class="clearfix">
+	<div class="social-font">
 		
 		<a href="http://weibo.com/he8706799" target="_blank" class="icon-weibo" title="微博"></a>
 		
@@ -1259,7 +1327,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019 
 		
 		<a href="/about" target="_blank" title="Wesin">Wesin</a>
 		
@@ -1360,7 +1428,7 @@ $(document).ready(function(){
 <!-- Totop Begin -->
 
 	<div id="totop">
-	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	<a title="返回顶部"><img src="/img/scrollup.png"></a>
 	</div>
 	<script src="/js/totop.js"></script>
 

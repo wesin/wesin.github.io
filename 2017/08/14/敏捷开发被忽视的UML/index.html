@@ -1,7 +1,7 @@
 
  <!DOCTYPE HTML>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
     <title>敏捷开发被忽视的UML | Wesin&#39;s blog</title>
@@ -11,25 +11,24 @@
     
 
     
-    <meta name="description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。
-背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
+    <meta name="description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。 背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
+<meta name="keywords" content="UML,PM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="敏捷开发被忽视的UML">
 <meta property="og:url" content="http://wesin.github.io/2017/08/14/敏捷开发被忽视的UML/index.html">
-<meta property="og:site_name" content="Wesin's blog">
-<meta property="og:description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。
-背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
-<meta property="og:image" content="http://wesin.github.io/../images/UML/approcase.png">
-<meta property="og:image" content="http://wesin.github.io/../images/UML/pospurchaseduoniu.png">
-<meta property="og:image" content="http://wesin.github.io/../images/UML/pospay.png">
-<meta property="og:image" content="http://wesin.github.io/../images/UML/class.png">
-<meta property="og:image" content="http://wesin.github.io/../images/UML/time.png">
+<meta property="og:site_name" content="Wesin&#39;s blog">
+<meta property="og:description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。 背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://wesin.github.io/2017/08/14/images/UML/approcase.png">
+<meta property="og:image" content="http://wesin.github.io/2017/08/14/images/UML/pospurchaseduoniu.png">
+<meta property="og:image" content="http://wesin.github.io/2017/08/14/images/UML/pospay.png">
+<meta property="og:image" content="http://wesin.github.io/2017/08/14/images/UML/class.png">
+<meta property="og:image" content="http://wesin.github.io/2017/08/14/images/UML/time.png">
 <meta property="og:updated_time" content="2017-08-14T10:20:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="敏捷开发被忽视的UML">
-<meta name="twitter:description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。
-背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
-<meta name="twitter:image" content="http://wesin.github.io/../images/UML/approcase.png">
+<meta name="twitter:description" content="引言混了两年开发，忽然又进入了PM的角色上，好久没有做过项目管理了，很多工作方法都忘了。这里回忆顺便做个记录。 背景从上次跳槽进了一个创业公司，一个20来个人的小公司，万事从简，交流靠吼，需求靠说。人少了还好，和产品1v1的干也没什么大不了。不得不说，公司发展很快，短短两年，公司已经有150+的人马了。团队也变大了，然而产品的需求还是几句话的描述，再多加几个界面图，交互，场景纯靠描述。几个产品的对">
+<meta name="twitter:image" content="http://wesin.github.io/2017/08/14/images/UML/approcase.png">
 
     
     
@@ -41,14 +40,14 @@
     
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
+</html>
   <body>
     <header>
       
 <div>
 		
 			<div id="imglogo">
-				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"/></a>
+				<a href="/"><img src="/img/bigcat.png" alt="Wesin&#39;s blog" title="Wesin&#39;s blog"></a>
 			</div>
 			
 			<div id="textlogo">
@@ -71,17 +70,17 @@
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索">
 						<input type="hidden" name="q" value="site:wesin.github.io">
 					</form>
 					
 					</li>
 				</ul>
-			</nav>			
+			</ul></nav>			
 </div>
     </header>
     <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
+      <div id="main" class="post" itemscope="" itemprop="blogPost">
   
 	<article itemprop="articleBody"> 
 		<header class="article-info clearfix">
@@ -93,7 +92,7 @@
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
-  <p class="article-time">
+  </p><p class="article-time">
     <time datetime="2017-08-14T03:19:09.000Z" itemprop="datePublished"> 发表于 2017-08-14</time>
     
   </p>
@@ -163,7 +162,7 @@
 	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	<a class="jiathis_counter_style"></a>
 </div>
-<script type="text/javascript" >
+<script type="text/javascript">
     var jiathis_config={
     data_track_clickback:true,
     sm:"copy,renren,cqq",
@@ -186,9 +185,9 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
+ <div class="prev">
  <a href="/2017/08/18/Python学习-实战篇/" title="Python学习-实战篇">
-  <strong>上一篇：</strong><br/>
+  <strong>上一篇：</strong><br>
   <span>
   Python学习-实战篇</span>
 </a>
@@ -196,8 +195,8 @@
 
 
 <div class="next">
-<a href="/2017/08/12/Python学习-方法篇/"  title="Python学习-方法篇">
- <strong>下一篇：</strong><br/> 
+<a href="/2017/08/12/Python学习-方法篇/" title="Python学习-方法篇">
+ <strong>下一篇：</strong><br> 
  <span>Python学习-方法篇
 </span>
 </a>
@@ -229,7 +228,7 @@
 <div class="github-card">
 <p class="asidetitle">Github 名片</p>
 <div class="github-card" data-github="wesin" data-width="220" data-height="119" data-theme="medium">
-<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
 </div>
   </div>
 
@@ -249,7 +248,7 @@
 		  
 		
 		  
-			<li><a href="/categories/ios/" title="ios">ios<sup>4</sup></a></li>
+			<li><a href="/categories/ios/" title="ios">ios<sup>5</sup></a></li>
 		  
 		
 		</ul>
@@ -262,15 +261,11 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/ios/" title="ios">ios<sup>3</sup></a></li>
+				<li><a href="/tags/ios/" title="ios">ios<sup>4</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -282,11 +277,7 @@
 			
 		
 			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+				<li><a href="/tags/Bluetooth/" title="Bluetooth">Bluetooth<sup>2</sup></a></li>
 			
 		
 			
@@ -303,6 +294,22 @@
 		
 			
 				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode10-2/" title="Xcode10.2">Xcode10.2<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -331,7 +338,7 @@
 
   <div class="weiboshow">
   <p class="asidetitle">新浪微博</p>
-    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
+    <iframe width="100%" height="119" class="share_self" frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=c0177d78&dpc=1"></iframe>
     <!-- <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height=86 src="http://music.163.com/outchain/player?type=2&id=412902950&auto=1&height=66"></iframe> -->
 </div>
 
@@ -339,7 +346,7 @@
 </aside>
 </div>
     </div>
-    <footer><div id="footer" >
+    <footer><div id="footer">
 	
 	<div class="line">
 		<span></span>
@@ -348,11 +355,11 @@
 	
 	
 	<section class="info">
-		<p> Hello ,I&#39;m Wesin in Hunpun. <br/>
+		<p> Hello ,I&#39;m Wesin in Hunpun. <br>
 			风也如是,雨也如梦.</p>
 	</section>
 	 
-	<div class="social-font" class="clearfix">
+	<div class="social-font">
 		
 		<a href="http://weibo.com/he8706799" target="_blank" class="icon-weibo" title="微博"></a>
 		
@@ -372,7 +379,7 @@
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019 
 		
 		<a href="/about" target="_blank" title="Wesin">Wesin</a>
 		
@@ -513,7 +520,7 @@ $(document).ready(function(){
 <!-- Totop Begin -->
 
 	<div id="totop">
-	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	<a title="返回顶部"><img src="/img/scrollup.png"></a>
 	</div>
 	<script src="/js/totop.js"></script>
 

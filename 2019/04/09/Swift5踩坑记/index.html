@@ -4,27 +4,25 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Swift3踩坑记 | Wesin&#39;s blog</title>
+    <title>Swift5踩坑记 | Wesin&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Wesin">
     
 
     
-    <meta name="description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
-<meta name="keywords" content="Swift3,Xcode8,ios">
+    <meta name="description" content="ps: 春光如梭，一年又已过去，xcode10丝滑的过度了4.2版本。以为苹果终于给力了。然而xcode10.2的升级，Swift5的更新让我明白了一个道理，xcode10.2才是那个点，xcode10说不定只是老板催的急，临时发的一个版。 闲话不多说，描述下这次遇到的问题吧。 HashValue 彻底不能用了其实这个swift4.2就已经有了新的方案，只是前面一直还能用。swift5直接编译报错">
+<meta name="keywords" content="ios,Swift5,Xcode10.2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift3踩坑记">
-<meta property="og:url" content="http://wesin.github.io/2016/11/07/Swift3踩坑记/index.html">
+<meta property="og:title" content="Swift5踩坑记">
+<meta property="og:url" content="http://wesin.github.io/2019/04/09/Swift5踩坑记/index.html">
 <meta property="og:site_name" content="Wesin&#39;s blog">
-<meta property="og:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
+<meta property="og:description" content="ps: 春光如梭，一年又已过去，xcode10丝滑的过度了4.2版本。以为苹果终于给力了。然而xcode10.2的升级，Swift5的更新让我明白了一个道理，xcode10.2才是那个点，xcode10说不定只是老板催的急，临时发的一个版。 闲话不多说，描述下这次遇到的问题吧。 HashValue 彻底不能用了其实这个swift4.2就已经有了新的方案，只是前面一直还能用。swift5直接编译报错">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://wesin.github.io/2016/11/07/images/xcode8/editschema.png">
-<meta property="og:updated_time" content="2017-08-12T06:19:33.000Z">
+<meta property="og:updated_time" content="2019-04-09T06:29:50.173Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Swift3踩坑记">
-<meta name="twitter:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
-<meta name="twitter:image" content="http://wesin.github.io/2016/11/07/images/xcode8/editschema.png">
+<meta name="twitter:title" content="Swift5踩坑记">
+<meta name="twitter:description" content="ps: 春光如梭，一年又已过去，xcode10丝滑的过度了4.2版本。以为苹果终于给力了。然而xcode10.2的升级，Swift5的更新让我明白了一个道理，xcode10.2才是那个点，xcode10说不定只是老板催的急，临时发的一个版。 闲话不多说，描述下这次遇到的问题吧。 HashValue 彻底不能用了其实这个swift4.2就已经有了新的方案，只是前面一直还能用。swift5直接编译报错">
 
     
     
@@ -82,14 +80,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+      <a href="/2019/04/09/Swift5踩坑记/" title="Swift5踩坑记" itemprop="url">Swift5踩坑记</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
   </p><p class="article-time">
-    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    <time datetime="2019-04-09T04:03:24.000Z" itemprop="datePublished"> 发表于 2019-04-09</time>
     
   </p>
 </header>
@@ -98,24 +96,47 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xcode8打开永远崩溃"><span class="toc-number">1.</span> <span class="toc-text">Xcode8打开永远崩溃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编译卡住不动了"><span class="toc-number">2.</span> <span class="toc-text">编译卡住不动了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3优化不完整的代码bug"><span class="toc-number">3.</span> <span class="toc-text">Swift3优化不完整的代码bug</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3-extension的坑"><span class="toc-number">4.</span> <span class="toc-text">Swift3 extension的坑</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashValue-彻底不能用了"><span class="toc-number">1.</span> <span class="toc-text">HashValue 彻底不能用了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#大坑-release版本发布后TableView某些delegate无法触发生效"><span class="toc-number">2.</span> <span class="toc-text">大坑,release版本发布后TableView某些delegate无法触发生效</span></a></li></ol>
 		
 		</div>
 		
-		<p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
-<h1 id="Xcode8打开永远崩溃"><a href="#Xcode8打开永远崩溃" class="headerlink" title="Xcode8打开永远崩溃"></a><strong>Xcode8打开永远崩溃</strong></h1><p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
-<h1 id="编译卡住不动了"><a href="#编译卡住不动了" class="headerlink" title="编译卡住不动了"></a><strong>编译卡住不动了</strong></h1><p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
-<p>网上找了N多资料，终于发现蛛丝马迹。</p>
-<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
-<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
-<p>好吧，终于编译通过了。</p>
-<h1 id="Swift3优化不完整的代码bug"><a href="#Swift3优化不完整的代码bug" class="headerlink" title="Swift3优化不完整的代码bug"></a><strong>Swift3优化不完整的代码bug</strong></h1><p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
-</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
-<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
-<h1 id="Swift3-extension的坑"><a href="#Swift3-extension的坑" class="headerlink" title="Swift3 extension的坑"></a><strong>Swift3 extension的坑</strong></h1><p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
-<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
-<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+		<p><strong>ps</strong>: 春光如梭，一年又已过去，xcode10丝滑的过度了4.2版本。以为苹果终于给力了。然而xcode10.2的升级，Swift5的更新让我明白了一个道理，xcode10.2才是那个点，xcode10说不定只是老板催的急，临时发的一个版。</p>
+<p>闲话不多说，描述下这次遇到的问题吧。</p>
+<h1 id="HashValue-彻底不能用了"><a href="#HashValue-彻底不能用了" class="headerlink" title="HashValue 彻底不能用了"></a>HashValue 彻底不能用了</h1><p>其实这个swift4.2就已经有了新的方案，只是前面一直还能用。swift5直接编译报错了。</p>
+<p>下面就是替换方案的使用方法。</p>
+<pre><code>// swift 3
+extension Point: Equatable{
+    func ==(lhs: Testhash, rhs: Testhash) -&gt; Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+extension Point: Equatable {
+    var hashValue: Int {
+        get {
+            return self.x + self.y * self.x
+        }
+    }
+}
+
+// swift 4.2
+extension Point: Equatable {
+    static func ==(lhs: Point, rhs: Point) -&gt; Bool {
+        // Ignore distanceFromOrigin for determining equality
+        return lhs.x == rhs.x &amp;&amp; lhs.y == rhs.y
+    }
+}
+extension Point: Hashable {
+    func hash(into hasher: inout Hasher) {
+        // Ignore distanceFromOrigin for hashing
+        hasher.combine(x)
+        hasher.combine(y)
+    }
+}
+</code></pre><h1 id="大坑-release版本发布后TableView某些delegate无法触发生效"><a href="#大坑-release版本发布后TableView某些delegate无法触发生效" class="headerlink" title="大坑,release版本发布后TableView某些delegate无法触发生效"></a>大坑,release版本发布后TableView某些delegate无法触发生效</h1><p>具体描述下场景, 当TableView所创建的类没有实现某些可以不实现的代理，比如didselect， heightforrow。然后这个类被子类继承，实现了didselect、heightforheader、heightforfooter的方法。在debug模式下，代码运行很正常，点击事件，高度都能正常显示。但是打包发布后，从testflight下载过来，就有可能存在点击，tableview行焦点色会变化，但是事件没法触发的问题。或者header和footer高度不对的问题。</p>
+<p>这个问题的原因估计是编译优化做了修改导致的。</p>
+<p>最无脑的解决方案是在父类把这几个方法都写一个空的实现，子类做函数重写。亲测有效。</p>
+<p>高端解决办法，可能需要去修改一些编译选项吧，然而没测试过，有大佬搞过的也可以指导下。</p>
+<p>此问题是Xcode10.2的锅，与swift版本无关。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -129,7 +150,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/ios/">ios</a>
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift5/">Swift5</a><a href="/tags/Xcode10-2/">Xcode10.2</a>
   </div>
 
 </div>
@@ -173,19 +194,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev">
- <a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" title="IOS蓝牙外设使用兼AppStore审核记">
-  <strong>上一篇：</strong><br>
-  <span>
-  IOS蓝牙外设使用兼AppStore审核记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/13/IOS蓝牙打印/" title="ios蓝牙打印">
+<a href="/2017/10/11/Swift4踩坑记/" title="Swift4踩坑记">
  <strong>下一篇：</strong><br> 
- <span>ios蓝牙打印
+ <span>Swift4踩坑记
 </span>
 </a>
 </div>
@@ -194,7 +207,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2016/11/07/Swift3踩坑记/" data-title="Swift3踩坑记" data-url="http://wesin.github.io/2016/11/07/Swift3踩坑记/"></div>
+	<div class="ds-thread" data-thread-key="2019/04/09/Swift5踩坑记/" data-title="Swift5踩坑记" data-url="http://wesin.github.io/2019/04/09/Swift5踩坑记/"></div>
 </section>
 
 
@@ -204,7 +217,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xcode8打开永远崩溃"><span class="toc-number">1.</span> <span class="toc-text">Xcode8打开永远崩溃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编译卡住不动了"><span class="toc-number">2.</span> <span class="toc-text">编译卡住不动了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3优化不完整的代码bug"><span class="toc-number">3.</span> <span class="toc-text">Swift3优化不完整的代码bug</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3-extension的坑"><span class="toc-number">4.</span> <span class="toc-text">Swift3 extension的坑</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashValue-彻底不能用了"><span class="toc-number">1.</span> <span class="toc-text">HashValue 彻底不能用了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#大坑-release版本发布后TableView某些delegate无法触发生效"><span class="toc-number">2.</span> <span class="toc-text">大坑,release版本发布后TableView某些delegate无法触发生效</span></a></li></ol>
  
   </div>
 
