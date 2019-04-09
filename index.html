@@ -77,6 +77,91 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2019/04/09/Maxcompute批量分区删除/" title="Maxcompute批量分区删除" itemprop="url">Maxcompute批量分区删除</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  </p><p class="article-time">
+    <time datetime="2019-04-09T07:03:07.000Z" itemprop="datePublished"> 发表于 2019-04-09</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>: Maxcompute数据仓库建设的分享。</p>
+<h1 id="Maxcompute"><a href="#Maxcompute" class="headerlink" title="Maxcompute"></a>Maxcompute</h1><p>大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。</p>
+<p>“方便”之所以加个引号，是因为某些方面的确很方便，<br>当然业务实在复杂了，很多时候也存在用的很难受的地方。</p>
+<p>更多介绍去阿里官网了解吧。</p>
+<p>回到正题。</p>
+<h1 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h1><p>介绍下分区的概念，Table是一个数据表，也是一个分区的数组。分区把Table的数据分成了一个个的区块。</p>
+<p>Maxcompute是个不支持某条数据修改删除的数据仓库。而分区是可以删除和新增的。引入分区，就可以做到在小颗粒度上做到修改和删除的功能。</p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>首先描述下为何会有大量的分区需要删除的场景。</p>
+<ul>
+<li>数据从datahub归档，比如按频率最高的归档方式 15分钟一次，每次一个分区，可以想象几个月后将会有多少分区。</li>
+<li>数据从mysql分库增量读取，以每天一次增量，乘以分库的数量，也会产生大量的分区。</li>
+</ul>
+<p>分区数量多了之后，文件将会变多。一个是Maxcompute对于表的分区是一个上限数量，另一个是分区数量多了之后计算将会很慢。</p>
+<p>这些源数据将会经过清洗产生对应的中间表或者结果集，供BI或者数据分析使用。而源数据为了方便管理，可以通过sql聚合成一个大分区来存放。而原来的很多分区就可以删除，以便腾出空间。</p>
+<h1 id="方式"><a href="#方式" class="headerlink" title="方式"></a>方式</h1><p>一般正常删除分区是通过sql来删除。</p>
+<pre><code>alter table 表A drop if EXISTS PARTITION(分区名=&apos;123&apos;)
+</code></pre><p>这种方式只能一次删除一个分区，当分区有上万个的时候就不适用了。</p>
+<p>这种情况可以通过pyodps来轻松的批量删除分区。</p>
+<p>下面是一个删除datahub归档分区的实例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清除历史分区，防止分区数达到上限</span></span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date, timedelta</span><br><span class="line"><span class="comment"># 删除十天前分区</span></span><br><span class="line">end_date = date.today() - timedelta(days=<span class="number">10</span>)</span><br><span class="line">end = end_date.strftime(<span class="string">'%Y%m%d'</span>)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">drop_pars</span><span class="params">(tableName)</span>:</span></span><br><span class="line">    t = o.get_table(tableName)</span><br><span class="line">    s = list(filter(<span class="keyword">lambda</span> x: x.name &lt; <span class="string">"ds='&#123;&#125;'"</span>.format(end), t.partitions))</span><br><span class="line">    <span class="keyword">for</span> par <span class="keyword">in</span> s:</span><br><span class="line">        par.drop()</span><br><span class="line">	</span><br><span class="line">drop_pars(<span class="string">"dhub_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_ft_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_dn_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_wms_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_trade_send"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_wms_trade_send"</span>)</span><br></pre></td></tr></table></figure>
+<p>可以在dataworks里面新建个pyodps的节点来每天运行，一劳永逸。</p>
+<p>如果是放在python本地运行的话建议使用ipython。具体还需要配置下odps的环境。可以参考下<a href="https://pyodps.readthedocs.io/zh_CN/latest/interactive.html#ipython" target="_blank" rel="noopener">官方文档</a>。</p>
+<h1 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h1><p>Dataworks使用中分库分表很多，怎么配置大量的同步任务。有经验的可以一起研究下。</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Maxcompute/">Maxcompute</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Python/">Python</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2019/04/09/Maxcompute批量分区删除/#comments" class="ds-thread-count comments-count-link" data-thread-key="2019/04/09/Maxcompute批量分区删除/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2019/04/09/Swift5踩坑记/" title="Swift5踩坑记" itemprop="url">Swift5踩坑记</a>
   </h1>
   <p class="article-author">By
@@ -145,7 +230,7 @@ extension Point: Hashable {
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift5/">Swift5</a><a href="/tags/Xcode10-2/">Xcode10.2</a>
+  <span></span> <a href="/tags/Swift5/">Swift5</a><a href="/tags/ios/">ios</a><a href="/tags/Xcode10-2/">Xcode10.2</a>
   </div>
 
 </div>
@@ -862,7 +947,7 @@ list(filter(lambda x:x &gt; 3, range(5)))
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/ios/">ios</a>
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a>
   </div>
 
 </div>
@@ -1139,7 +1224,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/ios/">ios</a><a href="/tags/Swift/">Swift</a><a href="/tags/Print/">Print</a>
+  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Swift/">Swift</a><a href="/tags/Print/">Print</a>
   </div>
 
 </div>
@@ -1188,6 +1273,10 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul>
 		
 		  
+			<li><a href="/categories/Maxcompute/" title="Maxcompute">Maxcompute<sup>1</sup></a></li>
+		  
+		
+		  
 			<li><a href="/categories/PM/" title="PM">PM<sup>1</sup></a></li>
 		  
 		
@@ -1209,11 +1298,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/ios/" title="ios">ios<sup>4</sup></a></li>
+				<li><a href="/tags/Python/" title="Python">Python<sup>4</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Python/" title="Python">Python<sup>3</sup></a></li>
+				<li><a href="/tags/ios/" title="ios">ios<sup>4</sup></a></li>
 			
 		
 			
@@ -1229,11 +1318,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
-				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
+				<li><a href="/tags/Xcode10-2/" title="Xcode10.2">Xcode10.2<sup>1</sup></a></li>
 			
 		
 			
@@ -1245,11 +1334,11 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
-				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Xcode10-2/" title="Xcode10.2">Xcode10.2<sup>1</sup></a></li>
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
 			
 		
 			

@@ -4,27 +4,25 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>Swift3踩坑记 | Wesin&#39;s blog</title>
+    <title>Maxcompute批量分区删除 | Wesin&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Wesin">
     
 
     
-    <meta name="description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
-<meta name="keywords" content="ios,Swift3,Xcode8">
+    <meta name="description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
+<meta name="keywords" content="Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift3踩坑记">
-<meta property="og:url" content="http://wesin.github.io/2016/11/07/Swift3踩坑记/index.html">
+<meta property="og:title" content="Maxcompute批量分区删除">
+<meta property="og:url" content="http://wesin.github.io/2019/04/09/Maxcompute批量分区删除/index.html">
 <meta property="og:site_name" content="Wesin&#39;s blog">
-<meta property="og:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
+<meta property="og:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://wesin.github.io/2016/11/07/images/xcode8/editschema.png">
-<meta property="og:updated_time" content="2017-08-12T06:19:33.000Z">
+<meta property="og:updated_time" content="2019-04-09T10:03:22.326Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Swift3踩坑记">
-<meta name="twitter:description" content="ps:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。 Xcode8打开永远崩溃刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。~/Library/Application Support">
-<meta name="twitter:image" content="http://wesin.github.io/2016/11/07/images/xcode8/editschema.png">
+<meta name="twitter:title" content="Maxcompute批量分区删除">
+<meta name="twitter:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
 
     
     
@@ -82,14 +80,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+      <a href="/2019/04/09/Maxcompute批量分区删除/" title="Maxcompute批量分区删除" itemprop="url">Maxcompute批量分区删除</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
 		
   </p><p class="article-time">
-    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    <time datetime="2019-04-09T07:03:07.000Z" itemprop="datePublished"> 发表于 2019-04-09</time>
     
   </p>
 </header>
@@ -98,24 +96,33 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xcode8打开永远崩溃"><span class="toc-number">1.</span> <span class="toc-text">Xcode8打开永远崩溃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编译卡住不动了"><span class="toc-number">2.</span> <span class="toc-text">编译卡住不动了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3优化不完整的代码bug"><span class="toc-number">3.</span> <span class="toc-text">Swift3优化不完整的代码bug</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3-extension的坑"><span class="toc-number">4.</span> <span class="toc-text">Swift3 extension的坑</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maxcompute"><span class="toc-number">1.</span> <span class="toc-text">Maxcompute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分区"><span class="toc-number">2.</span> <span class="toc-text">分区</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#背景"><span class="toc-number">3.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方式"><span class="toc-number">4.</span> <span class="toc-text">方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后语"><span class="toc-number">5.</span> <span class="toc-text">后语</span></a></li></ol>
 		
 		</div>
 		
-		<p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
-<h1 id="Xcode8打开永远崩溃"><a href="#Xcode8打开永远崩溃" class="headerlink" title="Xcode8打开永远崩溃"></a><strong>Xcode8打开永远崩溃</strong></h1><p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
-<h1 id="编译卡住不动了"><a href="#编译卡住不动了" class="headerlink" title="编译卡住不动了"></a><strong>编译卡住不动了</strong></h1><p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
-<p>网上找了N多资料，终于发现蛛丝马迹。</p>
-<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
-<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
-<p>好吧，终于编译通过了。</p>
-<h1 id="Swift3优化不完整的代码bug"><a href="#Swift3优化不完整的代码bug" class="headerlink" title="Swift3优化不完整的代码bug"></a><strong>Swift3优化不完整的代码bug</strong></h1><p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
-</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
-<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
-<h1 id="Swift3-extension的坑"><a href="#Swift3-extension的坑" class="headerlink" title="Swift3 extension的坑"></a><strong>Swift3 extension的坑</strong></h1><p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
-<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
-<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+		<p><strong>ps</strong>: Maxcompute数据仓库建设的分享。</p>
+<h1 id="Maxcompute"><a href="#Maxcompute" class="headerlink" title="Maxcompute"></a>Maxcompute</h1><p>大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。</p>
+<p>“方便”之所以加个引号，是因为某些方面的确很方便，<br>当然业务实在复杂了，很多时候也存在用的很难受的地方。</p>
+<p>更多介绍去阿里官网了解吧。</p>
+<p>回到正题。</p>
+<h1 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h1><p>介绍下分区的概念，Table是一个数据表，也是一个分区的数组。分区把Table的数据分成了一个个的区块。</p>
+<p>Maxcompute是个不支持某条数据修改删除的数据仓库。而分区是可以删除和新增的。引入分区，就可以做到在小颗粒度上做到修改和删除的功能。</p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>首先描述下为何会有大量的分区需要删除的场景。</p>
+<ul>
+<li>数据从datahub归档，比如按频率最高的归档方式 15分钟一次，每次一个分区，可以想象几个月后将会有多少分区。</li>
+<li>数据从mysql分库增量读取，以每天一次增量，乘以分库的数量，也会产生大量的分区。</li>
+</ul>
+<p>分区数量多了之后，文件将会变多。一个是Maxcompute对于表的分区是一个上限数量，另一个是分区数量多了之后计算将会很慢。</p>
+<p>这些源数据将会经过清洗产生对应的中间表或者结果集，供BI或者数据分析使用。而源数据为了方便管理，可以通过sql聚合成一个大分区来存放。而原来的很多分区就可以删除，以便腾出空间。</p>
+<h1 id="方式"><a href="#方式" class="headerlink" title="方式"></a>方式</h1><p>一般正常删除分区是通过sql来删除。</p>
+<pre><code>alter table 表A drop if EXISTS PARTITION(分区名=&apos;123&apos;)
+</code></pre><p>这种方式只能一次删除一个分区，当分区有上万个的时候就不适用了。</p>
+<p>这种情况可以通过pyodps来轻松的批量删除分区。</p>
+<p>下面是一个删除datahub归档分区的实例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清除历史分区，防止分区数达到上限</span></span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date, timedelta</span><br><span class="line"><span class="comment"># 删除十天前分区</span></span><br><span class="line">end_date = date.today() - timedelta(days=<span class="number">10</span>)</span><br><span class="line">end = end_date.strftime(<span class="string">'%Y%m%d'</span>)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">drop_pars</span><span class="params">(tableName)</span>:</span></span><br><span class="line">    t = o.get_table(tableName)</span><br><span class="line">    s = list(filter(<span class="keyword">lambda</span> x: x.name &lt; <span class="string">"ds='&#123;&#125;'"</span>.format(end), t.partitions))</span><br><span class="line">    <span class="keyword">for</span> par <span class="keyword">in</span> s:</span><br><span class="line">        par.drop()</span><br><span class="line">	</span><br><span class="line">drop_pars(<span class="string">"dhub_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_ft_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_dn_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_wms_trade"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_trade_send"</span>)</span><br><span class="line">drop_pars(<span class="string">"dhub_wms_trade_send"</span>)</span><br></pre></td></tr></table></figure>
+<p>可以在dataworks里面新建个pyodps的节点来每天运行，一劳永逸。</p>
+<p>如果是放在python本地运行的话建议使用ipython。具体还需要配置下odps的环境。可以参考下<a href="https://pyodps.readthedocs.io/zh_CN/latest/interactive.html#ipython" target="_blank" rel="noopener">官方文档</a>。</p>
+<h1 id="后语"><a href="#后语" class="headerlink" title="后语"></a>后语</h1><p>Dataworks使用中分库分表很多，怎么配置大量的同步任务。有经验的可以一起研究下。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -123,13 +130,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/ios/">ios</a>
+  <a class="article-category-link" href="/categories/Maxcompute/">Maxcompute</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a>
+  <span></span> <a href="/tags/Python/">Python</a>
   </div>
 
 </div>
@@ -173,19 +180,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev">
- <a href="/2017/01/18/IOS蓝牙外设使用兼AppStore审核记/" title="IOS蓝牙外设使用兼AppStore审核记">
-  <strong>上一篇：</strong><br>
-  <span>
-  IOS蓝牙外设使用兼AppStore审核记</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/06/13/IOS蓝牙打印/" title="ios蓝牙打印">
+<a href="/2019/04/09/Swift5踩坑记/" title="Swift5踩坑记">
  <strong>下一篇：</strong><br> 
- <span>ios蓝牙打印
+ <span>Swift5踩坑记
 </span>
 </a>
 </div>
@@ -194,7 +193,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2016/11/07/Swift3踩坑记/" data-title="Swift3踩坑记" data-url="http://wesin.github.io/2016/11/07/Swift3踩坑记/"></div>
+	<div class="ds-thread" data-thread-key="2019/04/09/Maxcompute批量分区删除/" data-title="Maxcompute批量分区删除" data-url="http://wesin.github.io/2019/04/09/Maxcompute批量分区删除/"></div>
 </section>
 
 
@@ -204,7 +203,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Xcode8打开永远崩溃"><span class="toc-number">1.</span> <span class="toc-text">Xcode8打开永远崩溃</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编译卡住不动了"><span class="toc-number">2.</span> <span class="toc-text">编译卡住不动了</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3优化不完整的代码bug"><span class="toc-number">3.</span> <span class="toc-text">Swift3优化不完整的代码bug</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift3-extension的坑"><span class="toc-number">4.</span> <span class="toc-text">Swift3 extension的坑</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maxcompute"><span class="toc-number">1.</span> <span class="toc-text">Maxcompute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分区"><span class="toc-number">2.</span> <span class="toc-text">分区</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#背景"><span class="toc-number">3.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#方式"><span class="toc-number">4.</span> <span class="toc-text">方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后语"><span class="toc-number">5.</span> <span class="toc-text">后语</span></a></li></ol>
  
   </div>
 
