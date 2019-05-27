@@ -11,18 +11,18 @@
     
 
     
-    <meta name="description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
+    <meta name="description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据工具，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析、机器学习等。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Maxcompute批量分区删除">
 <meta property="og:url" content="http://wesin.github.io/2019/04/09/Maxcompute批量分区删除/index.html">
 <meta property="og:site_name" content="Wesin&#39;s blog">
-<meta property="og:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
+<meta property="og:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据工具，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析、机器学习等。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-04-09T10:03:22.326Z">
+<meta property="og:updated_time" content="2019-04-09T10:05:41.243Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Maxcompute批量分区删除">
-<meta name="twitter:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网了解吧。 回">
+<meta name="twitter:description" content="ps: Maxcompute数据仓库建设的分享。 Maxcompute大致介绍下Maxcompute, Maxcompute是阿里的一个大数据工具，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析、机器学习等。 “方便”之所以加个引号，是因为某些方面的确很方便，当然业务实在复杂了，很多时候也存在用的很难受的地方。 更多介绍去阿里官网">
 
     
     
@@ -101,10 +101,10 @@
 		</div>
 		
 		<p><strong>ps</strong>: Maxcompute数据仓库建设的分享。</p>
-<h1 id="Maxcompute"><a href="#Maxcompute" class="headerlink" title="Maxcompute"></a>Maxcompute</h1><p>大致介绍下Maxcompute, Maxcompute是阿里的一个大数据仓库，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析。</p>
+<h1 id="Maxcompute"><a href="#Maxcompute" class="headerlink" title="Maxcompute"></a>Maxcompute</h1><p>大致介绍下Maxcompute, Maxcompute是阿里的一个大数据工具，基于Maxcompute阿里搭建了一个Datawork的数据平台。可以很“方便”的从各种数据源导入数据，做数据分析、机器学习等。</p>
 <p>“方便”之所以加个引号，是因为某些方面的确很方便，<br>当然业务实在复杂了，很多时候也存在用的很难受的地方。</p>
 <p>更多介绍去阿里官网了解吧。</p>
-<p>回到正题。</p>
+<p>回到正题，这里主要分享下批量删除分区的一个小技巧。</p>
 <h1 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h1><p>介绍下分区的概念，Table是一个数据表，也是一个分区的数组。分区把Table的数据分成了一个个的区块。</p>
 <p>Maxcompute是个不支持某条数据修改删除的数据仓库。而分区是可以删除和新增的。引入分区，就可以做到在小颗粒度上做到修改和删除的功能。</p>
 <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>首先描述下为何会有大量的分区需要删除的场景。</p>
@@ -272,6 +272,22 @@
 			
 		
 			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
 			
 		
@@ -285,22 +301,6 @@
 		
 			
 				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
 			
 		
 		</ul>

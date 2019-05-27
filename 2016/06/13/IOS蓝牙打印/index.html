@@ -12,14 +12,14 @@
 
     
     <meta name="description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
-<meta name="keywords" content="ios,Bluetooth,Swift,Print">
+<meta name="keywords" content="Bluetooth,Swift,ios,Print">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ios蓝牙打印">
 <meta property="og:url" content="http://wesin.github.io/2016/06/13/IOS蓝牙打印/index.html">
 <meta property="og:site_name" content="Wesin&#39;s blog">
 <meta property="og:description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-12-05T10:41:35.950Z">
+<meta property="og:updated_time" content="2019-05-27T09:04:25.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ios蓝牙打印">
 <meta name="twitter:description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
@@ -264,55 +264,14 @@ func cutPaper() {
     sendCode([0x1d, 0x56, 0x00] as [UInt8], boolEnd: true)
 }
 </code></pre><blockquote>
-<p>   加载图片</p>
+<p>   打印图片</p>
 </blockquote>
-<p>   图片方式 打印条码用的。这里用了ZXingObjC库转码，可以在打印的开头先预存图片，再打印，注意渣打印机是打印不了的，甚至会卡死打印机</p>
-<pre><code>func loadImage(code:String) {
-    let writer = ZXMultiFormatWriter()
-    do {
-        let result = try writer.encode(code, format: kBarcodeFormatCode128, width: 20, height: 44)
-        let hehe = result.descriptionWithSetString(&quot;1&quot;, unsetString: &quot;0&quot;)
-        let haha = hehe.componentsSeparatedByString(&quot;\n&quot;)[0]
-        let x = haha.characters.count
-        let y:UInt8 = 5
-        //打印指令解释有点难理解，大致解释下，0x1d, 0x2a 为指令， x/8=条码长度/8 y:高度 适应条码宽度而已 &gt;1 即可 
-        var barcodes:[UInt8] = [0x1D, 0x2A, UInt8(x / 8), y]
-        for index in haha.characters.indices {
-            if haha[index] == &quot;0&quot; {
-                for _ in 0..&lt;y {
-                    barcodes.append(0x00)
-                }
-            } else {
-                for _ in 0..&lt;y {
-                    barcodes.append(255)
-                }
-            }
-        }
-        //发送定义位图的指令
-        sendCode(barcodes)
-    } catch {
-        print(error)
-    }
-}
-</code></pre><blockquote>
-<p> 打印预存的图片   </p>
-</blockquote>
-<pre><code>func printBarcode() {
-    sendCode([0x1d, 0x2f, 0x03])
-}
-</code></pre><blockquote>
-<p> 发送指令的代码</p>
-</blockquote>
-<pre><code>func sendCode(bytes:[UInt8], boolEnd:Bool = false) {
-    let data = NSData(bytes: bytes, length: bytes.count)
-    sendMsg(data, boolEnd: boolEnd)
-}
-
-func sendMsg(data:NSData, boolEnd:Bool = false) {
-    print(data.length)
-    peripheral?.writeValue(data, forCharacteristic: characteristic!, type: .WithoutResponse)
-}
-</code></pre><p><strong>ps</strong>：还有一种直接条码打印的方式，手里打印机有限，一个渣，另外一只居然不能接受条码指令，渣打印机打不出来，所以就不写出来了。大致就是获取字符串的unicode，在指令后一起传入。没有成功~，~如果有知道的也可以补充下。</p>
+<p>图片需要做点阵转换，这个代码太多，给个搬砖地址。<a href="https://github.com/Haley-Wong/HLBluetoothDemo" target="_blank" rel="noopener">HLBluetoothDemo</a><br>，这里有点要注意下，改github的代码并不能在佳博打印机上打印二维码或者图片。主要是因为佳博打印机每次发送指令的最大长度只有146.而示例都是把指令全部组装好了一起发送，会导致打印机断片。</p>
+<p>所以下面的代码就是把图片指令拆分长度来发送给打印机</p>
+  <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">printImg</span><span class="params">(<span class="number">_</span> image: UIImage, width: CGFloat)</span></span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> borderImg = image.decorateBorder(<span class="number">10</span>) <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> img = borderImg.blackAndWhite()?.imageWithscaleMaxWidth(width) &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> data = img.bitmapData() &#123;</span><br><span class="line">                log.ln(<span class="string">"qrcode size: "</span> + data.<span class="built_in">count</span>.description)/</span><br><span class="line">                <span class="keyword">var</span> curIndex = <span class="number">0</span></span><br><span class="line">                <span class="keyword">let</span> step = <span class="number">100</span></span><br><span class="line">                <span class="keyword">while</span>(curIndex &lt; data.<span class="built_in">count</span>) &#123;</span><br><span class="line">                    <span class="keyword">let</span> endIndex = curIndex + step &lt; data.<span class="built_in">count</span> ? curIndex + step : data.<span class="built_in">count</span></span><br><span class="line">                    <span class="keyword">let</span> tmpData = data.subdata(<span class="keyword">in</span>: curIndex..&lt;endIndex)</span><br><span class="line">                    peripheral?.writeValue(tmpData, <span class="keyword">for</span>: characteristic!, type: .withoutResponse)</span><br><span class="line">                    curIndex += step</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        printNewLine()</span><br><span class="line"><span class="comment">//        // 恢复行间距</span></span><br><span class="line">        sendCode([<span class="number">0x1b</span>, <span class="number">0x32</span>], boolEnd: <span class="literal">true</span>)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>  上面代码里面有个<strong><em>image.decorateBorder</em></strong>，这是因为指令拆分后不知道为什么图片打印最下面几行总会有缺失，无法找到原因，所以做了个特别的处理，先给图片加了个外框。那么缺失的就是边框了，不影响图片整体打印。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">extension UIImage &#123;</span><br><span class="line">    func decorateBorder(_ borderWidth: CGFloat) -&gt; UIImage? &#123;</span><br><span class="line">        let resultSize = CGSize(width: self.size.width + 2 * borderWidth, height: self.size.height + 2 * borderWidth)</span><br><span class="line">        UIGraphicsBeginImageContext(resultSize)</span><br><span class="line">        let borderPath = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: 0, y: 0), size: resultSize), cornerRadius: 0)</span><br><span class="line">        UIColor.white.setFill()</span><br><span class="line">        borderPath.fill()</span><br><span class="line">        let imgRect = CGRect(x: borderWidth, y: borderWidth, width: self.size.width, height: self.size.height)</span><br><span class="line">        self.draw(in: imgRect)</span><br><span class="line">        let resultImg = UIGraphicsGetImageFromCurrentImageContext()</span><br><span class="line">        UIGraphicsEndImageContext()</span><br><span class="line">        return resultImg</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  之所以要用<strong><em>imageWithscaleMaxWidth</em></strong>，是因为二维码太宽导致图片大小太大，超出了打印机的缓存空间，会导致图片打印不出来。</p>
 <p>最后推荐下指令集比较完整的文档：</p>
 <p><a href="http://www.docin.com/p-676248934.html" target="_blank" rel="noopener"> http://www.docin.com/p-676248934.html </a></p>
   
@@ -328,7 +287,7 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/ios/">ios</a><a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Swift/">Swift</a><a href="/tags/Print/">Print</a>
+  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Swift/">Swift</a><a href="/tags/ios/">ios</a><a href="/tags/Print/">Print</a>
   </div>
 
 </div>
@@ -464,6 +423,22 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 			
 		
 			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Swift5/" title="Swift5">Swift5<sup>1</sup></a></li>
 			
 		
@@ -477,22 +452,6 @@ func sendMsg(data:NSData, boolEnd:Bool = false) {
 		
 			
 				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Swift4/" title="Swift4">Swift4<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Xcode9/" title="Xcode9">Xcode9<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
 			
 		
 		</ul>
