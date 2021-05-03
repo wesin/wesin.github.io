@@ -4,25 +4,20 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   
-    <title>ios蓝牙打印 | Wesin&#39;s blog</title>
+    <title>Wesin&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Wesin">
     
 
     
-    <meta name="description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
-<meta name="keywords" content="Bluetooth,ios,Swift,Print">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ios蓝牙打印">
-<meta property="og:url" content="http://wesin.github.io/2016/06/13/IOS蓝牙打印/index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Wesin&#39;s blog">
+<meta property="og:url" content="http://wesin.github.io/page/2/index.html">
 <meta property="og:site_name" content="Wesin&#39;s blog">
-<meta property="og:description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-27T09:04:25.974Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ios蓝牙打印">
-<meta name="twitter:description" content="ps:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。闲话不多说，经验教程如下： ps:我使用">
+<meta name="twitter:title" content="Wesin&#39;s blog">
 
     
     
@@ -74,10 +69,88 @@
 </div>
     </header>
     <div id="container">
-      <div id="main" class="post" itemscope="" itemprop="blogPost">
+      <div id="main">
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  </p><p class="article-time">
+    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
+<h1 id="Xcode8打开永远崩溃"><a href="#Xcode8打开永远崩溃" class="headerlink" title="Xcode8打开永远崩溃"></a><strong>Xcode8打开永远崩溃</strong></h1><p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
+<h1 id="编译卡住不动了"><a href="#编译卡住不动了" class="headerlink" title="编译卡住不动了"></a><strong>编译卡住不动了</strong></h1><p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
+<p>网上找了N多资料，终于发现蛛丝马迹。</p>
+<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
+<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
+<p>好吧，终于编译通过了。</p>
+<h1 id="Swift3优化不完整的代码bug"><a href="#Swift3优化不完整的代码bug" class="headerlink" title="Swift3优化不完整的代码bug"></a><strong>Swift3优化不完整的代码bug</strong></h1><p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
+<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
+</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
+<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
+<h1 id="Swift3-extension的坑"><a href="#Swift3-extension的坑" class="headerlink" title="Swift3 extension的坑"></a><strong>Swift3 extension的坑</strong></h1><p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
+<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
+<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
   
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
+  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/ios/">ios</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/11/07/Swift3踩坑记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/11/07/Swift3踩坑记/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
   <h1 itemprop="name">
     
       <a href="/2016/06/13/IOS蓝牙打印/" title="ios蓝牙打印" itemprop="url">ios蓝牙打印</a>
@@ -91,16 +164,9 @@
     
   </p>
 </header>
-	<div class="article-content">
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#蓝牙连接"><span class="toc-number">1.</span> <span class="toc-text">蓝牙连接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#打印机指令集"><span class="toc-number">2.</span> <span class="toc-text">打印机指令集</span></a></li></ol>
-		
-		</div>
-		
-		<p><strong>ps</strong>:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。<br>闲话不多说，经验教程如下：</p>
+    <div class="article-content">
+        
+        <p><strong>ps</strong>:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。<br>闲话不多说，经验教程如下：</p>
 <p><strong>ps</strong>:我使用的是swift开发</p>
 <h1 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a>蓝牙连接</h1><blockquote>
 <p>蓝牙框架引入</p>
@@ -274,9 +340,14 @@ func cutPaper() {
 <p>  之所以要用<strong><em>imageWithscaleMaxWidth</em></strong>，是因为二维码太宽导致图片大小太大，超出了打印机的缓存空间，会导致图片打印不出来。</p>
 <p>最后推荐下指令集比较完整的文档：</p>
 <p><a href="http://www.docin.com/p-676248934.html" target="_blank" rel="noopener"> http://www.docin.com/p-676248934.html </a></p>
-  
-	</div>
-		<footer class="article-footer clearfix">
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
@@ -294,69 +365,31 @@ func cutPaper() {
 
 
 
-	<div class="article-share" id="share">
+
+<div class="comments-count">
 	
-	<div class="share-jiathis">
-	  
-<div class="jiathis_style_24x24">
-	<a class="jiathis_button_tsina"></a>
-	<a class="jiathis_button_weixin"></a>
-	<a class="jiathis_button_renren"></a>
-	<a class="jiathis_button_qzone"></a>
-	<a class="jiathis_button_googleplus"></a>
-	<a class="jiathis_button_douban"></a>
-	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-	<a class="jiathis_counter_style"></a>
+	  	<span></span>
+		<a href="/2016/06/13/IOS蓝牙打印/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/06/13/IOS蓝牙打印/" data-count-type="comments">&nbsp;</a>
+	
 </div>
-<script type="text/javascript">
-    var jiathis_config={
-    data_track_clickback:true,
-    sm:"copy,renren,cqq",
-    pic:"",
-    summary:"",
-    
-  </script> 
-<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
-" charset="utf-8"></script>      
-
-	 </div>
-	
-	</div>
-
 
 </footer>
 
-   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev">
- <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记">
-  <strong>上一篇：</strong><br>
-  <span>
-  Swift3踩坑记</span>
-</a>
+
+    </article>
+
+
+
+
+
+
+
+  <nav id="page-nav" class="clearfix">
+    <a class="extend prev" rel="prev" href="/"><span></span>Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 </div>
-
-
-</nav>
-
-	
-<section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2016/06/13/IOS蓝牙打印/" data-title="ios蓝牙打印" data-url="http://wesin.github.io/2016/06/13/IOS蓝牙打印/"></div>
-</section>
-
-
-</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
- 
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#蓝牙连接"><span class="toc-number">1.</span> <span class="toc-text">蓝牙连接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#打印机指令集"><span class="toc-number">2.</span> <span class="toc-text">打印机指令集</span></a></li></ol>
- 
-  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -577,54 +610,14 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
 });
 </script>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  c.click(function(){
-    ta.css('display', 'block').addClass('fadeIn');
-  });
-  o.click(function(){
-    ta.css('display', 'none');
-  });
-  $(window).scroll(function(){
-    ta.css("top",Math.max(140,320-$(this).scrollTop()));
-  });
-});
-</script>
 
 
-
-
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"wesin"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
 
 
@@ -683,4 +676,4 @@ $(document).ready(function(){
 <!-- Tiny_search End -->
 
   </body>
-</html>
+ </html>

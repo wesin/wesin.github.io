@@ -77,6 +77,330 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2021/05/03/Webview与Vue结合的案例/" title="Webview与Vue结合的案例" itemprop="url">Webview与Vue结合的案例</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  </p><p class="article-time">
+    <time datetime="2021-05-03T08:36:21.000Z" itemprop="datePublished"> 发表于 2021-05-03</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>tip:<br>用Flutter实现通用框架功能，然后把业务功能用Vue去实现，可以解决公司移动开发资源紧张，但是每个业务组都备有H5开发的场景。</p>
+<p>而H5开发又不需要管理麻烦的app上架，原生硬件调用等移动端知识。</p>
+<p>所以最近使用<code>Flutter_inappwebview</code>做了个app内置浏览器来实现这个功能。</p>
+<p>下面说下实现方案：</p>
+<h2 id="引入Vue资源文件"><a href="#引入Vue资源文件" class="headerlink" title="引入Vue资源文件"></a>引入Vue资源文件</h2><p>用webview直接打开网页显然是体验比较卡的，所以需要把Vue做好的页面build成资源文件，打包到Flutter工程里。</p>
+<p>在<code>pubspec.yaml</code>配置文件引入资源文件。</p>
+<pre><code>assets:
+  - assets/
+  - assets/fonts/
+  - assets/css/
+  - assets/home/
+  - assets/js/
+  - assets/test/
+</code></pre><p>如果这里我就引入了两个Vue的页面。一个test、一个home。</p>
+<h2 id="准备Flutter-inappwebview"><a href="#准备Flutter-inappwebview" class="headerlink" title="准备Flutter_inappwebview"></a>准备Flutter_inappwebview</h2><p>Flutter_inappwebview官方案例里面用的例子使用的是最原始的方式，没有进度条，<br>随便页面状态发生变动都会重新rebuild webview。这显然不符合目前的Flutter开发理念。webview加载了网页后应该是固定而不需要重新build的。</p>
+<p>当时用的Flutter_bloc框架来解决，（最近发现GetX框架更简便，这里推荐下）这里很简单的在页面头部加了个进度条，中间来了个load动画。</p>
+<p>构建一个HPWebViewPage，核心代码</p>
+<pre><code>InAppWebView webviewInit(BuildContext context) {
+  HPWebViewBloc vbloc = BlocProvider.of&lt;HPWebViewBloc&gt;(context);
+  print(&quot;view init: ${this.viewInfo.url}&quot;);
+  return InAppWebView(
+      key: const Key(&quot;in_app_webview&quot;),
+      initialUrlRequest: this.viewInfo.url.startsWith(HPWebViewConst.filePath)
+          ? null
+          : URLRequest(url: Uri.parse(this.viewInfo.url)),
+      onWebViewCreated: (controller) {
+        if (jsHandler != null) {
+          jsHandler!(controller, context);
+        }
+      },
+      onLoadStart: (controller, uri) =&gt;
+          vbloc.add(HPWebViewLoadStartEvent(controller, uri)),
+      onLoadError: (controller, uri, code, message) =&gt;
+          vbloc.add(HPWebViewLoadErrorEvent(controller, uri, code, message)),
+      onLoadHttpError: (controller, uri, code, message) =&gt;
+          vbloc.add(HPWebViewLoadErrorEvent(controller, uri, code, message)),
+      onLoadStop: (controller, uri) =&gt;
+          vbloc.add(WebViewLoadStopEvent(controller, uri)),
+      onProgressChanged: (controller, progress) =&gt;
+          vbloc.add(WebViewProgressEvent(controller, progress)),
+      initialUserScripts: this.injectJSList);
+}
+</code></pre><p>jsHandler、injectJSList 是由外部传入的。Flutter与H5交互的代码。这个是由不同的业务定义。</p>
+<p>build 代码</p>
+<pre><code>@override
+Widget build(BuildContext context) {
+  return Stack(
+    alignment: Alignment.center,
+    fit: StackFit.expand,
+    children: [
+      webviewInit(context),
+      Positioned(
+          top: 0,
+          child: BlocBuilder&lt;HPWebViewBloc, HPWebViewState&gt;(
+            builder: (context, state) {
+              print(state);
+              if (state is HPWebViewLoadStartState) {
+                return Container(
+                    child: LinearProgressIndicator(value: 0), height: 2);
+              }
+              if (state is HPWebViewProgressState) {
+                return Container(
+                    child:
+                        LinearProgressIndicator(value: state.progress / 100),
+                    height: 2);
+              }
+              return Container(height: 0, width: 0);
+            },
+          ),
+          left: 0,
+          right: 0),
+      Center(
+        child: BlocBuilder&lt;HPWebViewBloc, HPWebViewState&gt;(
+          builder: (context, state) {
+            if (state is HPWebViewLoadStartState ||
+                state is HPWebViewProgressState) {
+              return CircularProgressIndicator();
+            }
+            return Container(height: 0, width: 0);
+          },
+        ),
+      )
+    ],
+  );
+}
+</code></pre><h2 id="打开Webview"><a href="#打开Webview" class="headerlink" title="打开Webview"></a>打开Webview</h2><p>打开webview需要注入交互的代码，不需要的话可以不加。</p>
+<pre><code>class WebViewUtil {
+  static void openWebView(WebViewModel viewInfo, BuildContext context) async {
+    String injectJS = await rootBundle.loadString(&quot;assets/files/inject.js&quot;);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return HPWebViewPage(
+          viewInfo: viewInfo,
+          injectJSList: UnmodifiableListView&lt;UserScript&gt;([
+            UserScript(
+                source: injectJS,
+                injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END),
+          ]),
+          jsHandler: _addJSHandler);
+    }));
+  }
+
+  static void _addJSHandler(
+      InAppWebViewController controller, BuildContext context) {
+    controller.addJavaScriptHandler(
+        handlerName: JSHandlerConst.close,
+        callback: (_) {
+          Navigator.of(context).pop();
+        });
+    controller.addJavaScriptHandler(
+        handlerName: JSHandlerConst.openUrl,
+        callback: (args) {
+          var url = args[0][&apos;url&apos;];
+          var title = args[0][&apos;title&apos;];
+          var filterUrl = args[0][&apos;filterurl&apos;];
+          var filterTitle = args[0][&apos;filtertitle&apos;];
+          Navigator.of(context).pushNamed(HPWebViewPage.routeName,
+              arguments: WebViewModel(url,
+                  title: title,
+                  filterUrl: filterUrl,
+                  filterTitle: filterTitle));
+          // bloc.add(JSHandlerOpenUrlEvent(args));
+        });
+
+    controller.addJavaScriptHandler(
+        handlerName: JSHandlerConst.back,
+        callback: (args) {
+          Navigator.of(context).pop();
+        });
+  }
+}    
+</code></pre><p>inject.js 只要是定义一套window.js.handler接口</p>
+<pre><code>//侧滑返回
+handler.back = function() {
+    window.flutter_inappwebview.callHandler(&apos;back&apos;);
+}
+</code></pre><p>目前的代码只能打开一个url,而不能打开本地的vue页面</p>
+<pre><code>void _openWebPage(WebViewModel viewInfo, BuildContext context) {
+    WebViewUtil.openWebView(viewInfo, context);
+  }
+
+ _openWebPage(
+        WebViewModel(&quot;https://github.com/wesin/hp_webview&quot;,
+            title: &quot;github&quot;),
+        context);
+</code></pre><h2 id="加载本地网页"><a href="#加载本地网页" class="headerlink" title="加载本地网页"></a>加载本地网页</h2><p>加载本地网页需要在app里启动一个代理服务，当通过代理加载url时，拦截请求。返回H5资源文件。通过这种方式，我们可以加载从服务端下载过来的html文件，也可以加载已经打包在工程的html文件。</p>
+<p>在main里启动本地代理服务，指定端口</p>
+<pre><code>final HPWebViewProxy localhostServer = new HPWebViewProxy(port: 8765);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await localhostServer.start();
+  print(localhostServer.isRunning());
+</code></pre><p>如此就可以打开本地网页了</p>
+<pre><code>ElevatedButton(
+      onPressed: () =&gt; _openWebPage(
+          WebViewModel(&quot;http://localhost:8765/home/&quot;), context),
+      child: Text(&quot;打开本地网页&quot;)),
+</code></pre><p>代理服务的代码和全部的代码都可以在我的github上看。<br><a href="https://github.com/wesin/hp_webview" target="_blank" rel="noopener">传送门</a></p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Flutter/">Flutter</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2021/05/03/Webview与Vue结合的案例/#comments" class="ds-thread-count comments-count-link" data-thread-key="2021/05/03/Webview与Vue结合的案例/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2021/05/03/Flutter-bloc框架使用笔记，后续估计都不太会用了/" title="Flutter_bloc框架使用笔记，后续估计都不太会用了" itemprop="url">Flutter_bloc框架使用笔记，后续估计都不太会用了</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
+		
+  </p><p class="article-time">
+    <time datetime="2021-05-03T08:34:05.000Z" itemprop="datePublished"> 发表于 2021-05-03</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>Flutter_bloc使用从代码生成说起</p>
+<h2 id="框架模板代码生成"><a href="#框架模板代码生成" class="headerlink" title="框架模板代码生成"></a>框架模板代码生成</h2><p>VSCode 有个flutter的插件 Flutter Files,<br>安装后在项目栏，右击可以新建对应的模板代码。</p>
+<p>选择【new small pack bloc】,输入page名称 小写下划线风格：wesin_test</p>
+<p>对应的会生成一个wesin_test文件夹，<br>文件夹里有</p>
+<ul>
+<li>wesin_test_page.dart</li>
+<li>wesin_test_screen.dart</li>
+<li>wesin_test_bloc.dart</li>
+<li>wesin_test_event.dart</li>
+<li>wesin_test_state.dart</li>
+</ul>
+<p>大致说明下每个页面的用途。</p>
+<ol>
+<li>page </li>
+</ol>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterPage</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">String</span> routeName = <span class="string">'/register'</span>;</span><br><span class="line">  RegisterPage(<span class="keyword">this</span>.phone, <span class="keyword">this</span>.verifyCode);</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> verifyCode;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> phone;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _RegisterPageState createState() =&gt; _RegisterPageState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_RegisterPageState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">RegisterPage</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> _registerBloc = RegisterBloc(RegisterState());</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: Text(LS.of(context, <span class="string">"register"</span>)),</span><br><span class="line">      ),</span><br><span class="line">      body: BlocProvider&lt;RegisterBloc&gt;(</span><br><span class="line">        create: (_) =&gt; _registerBloc,</span><br><span class="line">        child: RegisterScreen(widget.phone),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>作为一个主体的页面，定义了route名称。<br>可以使用<code>StatelessWidget</code>。因为正常也没什么状态管理</p>
+<p>在state里面的builder里构建了<code>BlocProvider</code>，</p>
+<pre><code>body: BlocProvider&lt;RegisterBloc&gt;(
+    create: (_) =&gt; _registerBloc,
+    child: RegisterScreen(widget.phone),
+  )
+</code></pre><p>这里是为后续的节点注册了一个<code>RegisterBloc</code>, 从这个节点下级的widget就可以通过<code>Provider.of&lt;RegisterBloc&gt;</code>来获取。<br>当然也可以有其他的方式比如<code>context.read&lt;RegisterBloc&gt;</code>来获取。</p>
+<p>这里也可以把bloc传给screen,可以方便在screen里面获取bloc。而不是通过在配置树里查找bloc。能稍微减少些性能消耗。</p>
+<ol start="2">
+<li>screen<br>screen主要是构建配置页面内容用。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">class RegisterScreen extends StatelessWidget &#123;</span><br><span class="line">  const RegisterScreen(</span><br><span class="line">    this.phone, &#123;</span><br><span class="line">    Key? key,</span><br><span class="line">  &#125;) : super(key: key);</span><br><span class="line"></span><br><span class="line">  final String phone;</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return BlocListener&lt;RegisterBloc, RegisterState&gt;(</span><br><span class="line">        listener: (ctx, state) &#123;</span><br><span class="line">          if (state.status.isSubmissionInProgress) &#123;</span><br><span class="line">            EasyLoading.show(</span><br><span class="line">                maskType: EasyLoadingMaskType.clear, dismissOnTap: false);</span><br><span class="line">            return;</span><br><span class="line">          &#125;</span><br><span class="line">          if (state.status.isSubmissionFailure) &#123;</span><br><span class="line">            EasyLoading.dismiss();</span><br><span class="line">            var message = LS.of(context, &quot;register_error&quot;);</span><br><span class="line">            EasyLoading.showError(&apos;$message:$&#123;state.errMessage ?? &apos;&apos;&#125;&apos;);</span><br><span class="line">            return;</span><br><span class="line">          &#125;</span><br><span class="line">          if (state.status.isSubmissionSuccess) &#123;</span><br><span class="line">            EasyLoading.dismiss();</span><br><span class="line">            showCupertinoDialog(</span><br><span class="line">                context: context,</span><br><span class="line">                builder: (context) &#123;</span><br><span class="line">                  return</span><br><span class="line">                    AlertDialog(</span><br><span class="line">                    content: Text(LS.of(context, &quot;register_success&quot;)),</span><br><span class="line">                    actions: [TextButton(onPressed: ()&#123;</span><br><span class="line">                      Navigator.of(context).popUntil(ModalRoute.withName(&quot;/&quot;));</span><br><span class="line">                    &#125;, child: Text(LS.of(context, &quot;confirm&quot;)))],</span><br><span class="line">                  );</span><br><span class="line">                &#125;);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        child: Align(</span><br><span class="line">          alignment: Alignment(0, -1),</span><br><span class="line">          child: Padding(</span><br><span class="line">            padding: const EdgeInsets.only(top: 31, left: 36, right:36),</span><br><span class="line">            child: Column(children: [</span><br><span class="line">              _UsernameInput(),</span><br><span class="line">              _PasswordInput(),</span><br><span class="line">              _ConfirmPasswordInput(),</span><br><span class="line">              const SizedBox(</span><br><span class="line">                height: 20,</span><br><span class="line">              ),</span><br><span class="line">              _RegisterButton()</span><br><span class="line">            ]),</span><br><span class="line">          ),</span><br><span class="line">        ));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class _RegisterButton extends StatelessWidget &#123;</span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    return BlocBuilder&lt;RegisterBloc, RegisterState&gt;(builder: (context, state) &#123;</span><br><span class="line">      return CircleRectButton(</span><br><span class="line">          child: Text(LS.of(context, &quot;register&quot;), style: TextStyle(letterSpacing: 20)),</span><br><span class="line">          onPressed: state.status.isValidated</span><br><span class="line">              ? () async &#123;</span><br><span class="line">                  context.read&lt;RegisterBloc&gt;().add(RegisterSubmitEvent());</span><br><span class="line">                &#125;</span><br><span class="line">              : null);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>BlocListener</strong>：<br>通过<code>BlocListener</code>来监听状态消息，收到消息child不会rebuild。适合拿来弹出加载页，错误信息等。</p>
+<p><strong>BlocBuilder</strong><br>通过<code>BlocBuilder</code>来包装需要修改的内容。<br>这里的在组装页面的时候尽量在涉及到更新的地方使用<br><code>BlocBuilder</code>,也尽可能的考虑<code>buildwhen</code> 属性。保持当必须要更新时才重新build的思路。</p>
+<ol start="3">
+<li>bloc<br>bloc 在封装后没什么逻辑，他的思路就是接受页面的事件，转为状态变更返回给页面。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class RegisterBloc extends Bloc&lt;RegisterEvent, RegisterState&gt; &#123;</span><br><span class="line"></span><br><span class="line">  RegisterBloc(RegisterState initialState) : super(initialState);</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Stream&lt;RegisterState&gt; mapEventToState(</span><br><span class="line">    RegisterEvent event,</span><br><span class="line">  ) async* &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      yield* event.applyAsync(currentState: state, bloc: this);</span><br><span class="line">    &#125; catch (_, stackTrace) &#123;</span><br><span class="line">      developer.log(&apos;$_&apos;, name: &apos;RegisterBloc&apos;, error: _, stackTrace: stackTrace);</span><br><span class="line">      yield state;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>将对应的事件处理放在event里面去执行显然更符合设计模式。代码也会更清晰，而不用做很多判断<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if(event is **event)&#123;</span><br><span class="line">    do(**)</span><br><span class="line">&#125; else if (event is **event) &#123;</span><br><span class="line">    do(**)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li>event</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@immutable</span><br><span class="line">abstract class RegisterEvent &#123;</span><br><span class="line">  const RegisterEvent();</span><br><span class="line">   Stream&lt;RegisterState&gt; applyAsync(&#123;required RegisterState currentState, required RegisterBloc bloc&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class UsernameChangeEvent extends RegisterEvent &#123;</span><br><span class="line">  const UsernameChangeEvent(this.username);</span><br><span class="line">  final String username;</span><br><span class="line"></span><br><span class="line">  Stream&lt;RegisterState&gt; applyAsync(&#123;required RegisterState currentState, required RegisterBloc bloc&#125;) async* &#123;</span><br><span class="line">    var input = UsernameInput.dirty(username);</span><br><span class="line">    var status = Formz.validate([input, currentState.password, currentState.confirmPassword]);</span><br><span class="line">    yield currentState.copyWith(username: input, status: status);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>抽象event，定义事件接口。<br>子类event来接收参数，实现事件接口并抛出新的状态给页面。</p>
+<ol start="5">
+<li>state<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">class RegisterState extends Equatable &#123;</span><br><span class="line">  final UsernameInput username;</span><br><span class="line">  final PasswordTwoInput password;</span><br><span class="line">  final PasswordTwoInput confirmPassword;</span><br><span class="line">  final FormzStatus status;</span><br><span class="line">  final String? errMessage;</span><br><span class="line">  RegisterState(&#123;</span><br><span class="line">    this.username = const UsernameInput.pure(),</span><br><span class="line">    this.password = const PasswordTwoInput.pure(),</span><br><span class="line">    this.confirmPassword = const PasswordTwoInput.pure(),</span><br><span class="line">    this.status = FormzStatus.pure,</span><br><span class="line">    this.errMessage</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  List&lt;Object&gt; get props =&gt; [username, password, confirmPassword, status];</span><br><span class="line"></span><br><span class="line">  RegisterState copyWith(&#123;</span><br><span class="line">    UsernameInput? username,</span><br><span class="line">    PasswordTwoInput? password,</span><br><span class="line">    PasswordTwoInput? confirmPassword,</span><br><span class="line">    FormzStatus? status,</span><br><span class="line">  &#125;) &#123;</span><br><span class="line">    return RegisterState(</span><br><span class="line">      username: username ?? this.username,</span><br><span class="line">      password: password ?? this.password,</span><br><span class="line">      confirmPassword: confirmPassword ?? this.confirmPassword,</span><br><span class="line">      status: status ?? this.status,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>state可以考虑抽象state和单独一个state类。看具体业务吧。如果属性很简单，可以考虑抽象。属性比较多的情况下就没必要抽象了。</p>
+<h2 id="思路总结"><a href="#思路总结" class="headerlink" title="思路总结"></a>思路总结</h2><ul>
+<li>Page作为整个页面的对外对象，给外部调用，同时定义和注册了本页面需要用的bloc.</li>
+<li>Screen配置了整个页面展示的widget。并把事件抛给bloc.通过接收bloc的最新状态，并rebuild UI.</li>
+<li>bloc里面处理事件并转为state返回给页面</li>
+</ul>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><h3 id="Cubit"><a href="#Cubit" class="headerlink" title="Cubit"></a>Cubit</h3><p>还有一套cubit的简单模板，其实就是把bloc换成了cubit。去掉了event的逻辑。</p>
+<p>screen里面事件调用cubit的方法。在cubit里面emit(new state).如此页面就可以接收到最新的状态了。</p>
+<h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><p>在使用体验上GET框架不依赖context。对于使用体验来说应该更好些。对于简单的状态管理，也是GET更方便。</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Flutter/">Flutter</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2021/05/03/Flutter-bloc框架使用笔记，后续估计都不太会用了/#comments" class="ds-thread-count comments-count-link" data-thread-key="2021/05/03/Flutter-bloc框架使用笔记，后续估计都不太会用了/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2019/04/09/Maxcompute批量分区删除/" title="Maxcompute批量分区删除" itemprop="url">Maxcompute批量分区删除</a>
   </h1>
   <p class="article-author">By
@@ -896,318 +1220,10 @@ list(filter(lambda x:x &gt; 3, range(5)))
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2016/11/07/Swift3踩坑记/" title="Swift3踩坑记" itemprop="url">Swift3踩坑记</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
-		
-  </p><p class="article-time">
-    <time datetime="2016-11-07T01:37:19.000Z" itemprop="datePublished"> 发表于 2016-11-07</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p><strong>ps</strong>:Xcode8出来两个星期，手贱忍不住升级了，抱着对swift3强烈的期望升级了，升级了，升级，升……然后雪崩一场。</p>
-<h1 id="Xcode8打开永远崩溃"><a href="#Xcode8打开永远崩溃" class="headerlink" title="Xcode8打开永远崩溃"></a><strong>Xcode8打开永远崩溃</strong></h1><p>刚升级的xcode8每次打开输入第一个字符就崩溃，一直如此从来没有改变。错误信息显示imagenamed插件问题，菜单栏并没有插件显示，强行自我淡定了下，在xcode插件目录找到了残留的插件尸体。<br>~/Library/Application Support/Developer/Shared/Xcode/Plug-ins<br>删除后终于能正常打开了。</p>
-<h1 id="编译卡住不动了"><a href="#编译卡住不动了" class="headerlink" title="编译卡住不动了"></a><strong>编译卡住不动了</strong></h1><p>好醉，说好的优化了性能呢，代码转换后各种错误，然后编译找错误提示，再编译再来一批，打完N波僵尸后，系统编译到某个文件卡住永远不动了，关键是也不报错。听着笔记本可怜的轰隆隆声，心好碎。</p>
-<p>网上找了N多资料，终于发现蛛丝马迹。</p>
-<p>网上有说再以前的版本，有遇到xml字符串太长造成编译卡住问题。<br>仔细研究代码发现，原来是一个fmdb的sql语句问题，字段太多，insert语句太长，然后xcode就卡住了，卡住了，卡住，了……一口老血。</p>
-<p>解决方法，不能使用fmdb自带的update方法，因为赋值参数太多了，会卡住，所以只能拼装成一个完整的sql，然后把老长老长的sql用StringBuilder包装起来，分割成无数份。</p>
-<p>好吧，终于编译通过了。</p>
-<h1 id="Swift3优化不完整的代码bug"><a href="#Swift3优化不完整的代码bug" class="headerlink" title="Swift3优化不完整的代码bug"></a><strong>Swift3优化不完整的代码bug</strong></h1><p>UITableView在ios开发中使用频率应该是很高的，swift3对UITableView的几个代理方法做了写法上的优化，比如</p>
-<pre><code>func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell
-</code></pre><p>原来的写法cellForRowAt对应的是cellForRowAtIndexPath，少了多余的IndexPath，完美，看起来简化多了。批量替换下呗。</p>
-<p>编译好后一看高度什么鬼，点击为什么没效果。然而编译也没报错。还原回去才发现 didSelectRowAtIndexPath 在xcode8中后面的IndexPath必须有，没有这个代理就不会被调用。也是吐血一升。</p>
-<h1 id="Swift3-extension的坑"><a href="#Swift3-extension的坑" class="headerlink" title="Swift3 extension的坑"></a><strong>Swift3 extension的坑</strong></h1><p>我不知道extension文档里面有没有说过不能放override的方法，不然这个方法在release下面是不会被调用的。然而为什么在debug模式下override的方法又会被调用。这个只能说坑到家了。好不容易把代码打包半天提交到Itunesconnect, testflight下来一看剧情不一样。</p>
-<p>🐱了个咪，为什么编译看起来一点问题都没有。只能用release模式调试，一步一步判断才发现这个问题。</p>
-<p>附上对应release设置的图片:<img src="../images/xcode8/editschema.png" alt="Screen shot"></p>
 
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/ios/">ios</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Swift3/">Swift3</a><a href="/tags/Xcode8/">Xcode8</a><a href="/tags/ios/">ios</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2016/11/07/Swift3踩坑记/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/11/07/Swift3踩坑记/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2016/06/13/IOS蓝牙打印/" title="ios蓝牙打印" itemprop="url">ios蓝牙打印</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Wesin" target="_blank" itemprop="author">Wesin</a>
-		
-  </p><p class="article-time">
-    <time datetime="2016-06-13T00:55:05.000Z" itemprop="datePublished"> 发表于 2016-06-13</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p><strong>ps</strong>:近来公司有个ios调用蓝牙打印机打印小票的功能，网上资料也有，ESC/POS打印指令集也有，以前刚毕业有做过winform调用网络小票打印机的功能，指令集反正都是差不多的。只是攻略不是很详细，这里把详细步骤和遇到的问题以及解决方法详细的记录下，已供后来人参考。这里建议大家还是使用ESC/POS指令来实现打印功能，大多数给力的打印机厂商都会兼容这套指令。<br>闲话不多说，经验教程如下：</p>
-<p><strong>ps</strong>:我使用的是swift开发</p>
-<h1 id="蓝牙连接"><a href="#蓝牙连接" class="headerlink" title="蓝牙连接"></a>蓝牙连接</h1><blockquote>
-<p>蓝牙框架引入</p>
-</blockquote>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> CoreBluetooth</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>创建蓝牙管理类</p>
-</blockquote>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">lazy</span> <span class="keyword">var</span> blueManager:<span class="type">CBCentralManager?</span> = <span class="type">CBCentralManager</span>(delegate: <span class="keyword">self</span>, queue: dispatch_get_main_queue())</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>扫描可连接蓝牙</p>
-</blockquote>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">blueManager?.scanForPeripheralsWithServices(<span class="literal">nil</span>, options: [<span class="type">CBCentralManagerScanOptionAllowDuplicatesKey</span>:<span class="literal">true</span>])</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>蓝牙处理代理类</p>
-</blockquote>
-<p>蓝牙设置开关的代理</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManagerDidUpdateState</span><span class="params">(central: CBCentralManager)</span></span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (central.state)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">CBCentralManagerState</span>.<span class="type">PoweredOn</span>:</span><br><span class="line">        <span class="comment">//当蓝牙打开时，自动扫描对应的外设</span></span><br><span class="line">            blueManager?.scanForPeripheralsWithServices(<span class="literal">nil</span>, options: [<span class="type">CBCentralManagerScanOptionAllowDuplicatesKey</span>:<span class="literal">true</span>])</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="type">NSLog</span>(<span class="string">"Central Manager did change state"</span>)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>扫描监听代理，当扫描到蓝牙设备时，这里会接受到通知</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManager</span><span class="params">(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> uuid = peripheral.identifier.<span class="type">UUIDString</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">"发现设备"</span>)</span><br><span class="line">            <span class="built_in">print</span>(uuid)</span><br><span class="line">            <span class="built_in">print</span>(peripheral.name, advertisementData)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 不包含服务功能</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">if</span> advertisementData[<span class="string">"kCBAdvDataServiceUUIDs"</span>] == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//这里是把扫描到的不同设备保存起来，devices是自己定义的一个蓝牙设备数组</span></span><br><span class="line">    <span class="keyword">if</span> devices.<span class="built_in">find</span>(&#123;$<span class="number">0</span>.peripheral?.identifier.<span class="type">UUIDString</span> == uuid&#125;) == -<span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> serviceID = (advertisementData[<span class="string">"kCBAdvDataServiceUUIDs"</span>] <span class="keyword">as</span>? (<span class="type">String</span>,<span class="type">String</span>))?.<span class="number">1</span> ?? <span class="string">""</span></span><br><span class="line">        devices.append(<span class="type">Device</span>(name: peripheral.name ?? <span class="type">LS</span>(<span class="string">"unnamed"</span>), peripheral: peripheral, serviceUUID:serviceID)) <span class="comment">//"未命名"</span></span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从打印机数组里面确定需要选择的打印机 调用连接代码，弱水三千，取一瓢而饮之。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">connectDevice</span><span class="params">(device:Device)</span></span> &#123;</span><br><span class="line">    blueManager?.stopScan()</span><br><span class="line">    currentDevice = device</span><br><span class="line">    blueManager?.connectPeripheral(device.peripheral!, options: <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>连接打印机后，系统继续调用代理，告诉你连接结果<br>顾名思义，连不上T0T</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">centralManager</span><span class="params">(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?)</span></span> &#123;</span><br><span class="line">    <span class="type">MessageShow</span>.<span class="type">ShareInstance</span>.errorMessage = error?.localizedFailureReason ?? <span class="string">""</span></span><br><span class="line">    printDelegate?.selectPrinter()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>连上了~，~</p>
-<pre><code>func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
-    noConnectedTimer?.invalidate()
-    disConnectTimer?.invalidate()
-    peripheral.delegate = self
-    peripheral.discoverServices(nil)
-}
-</code></pre><p>这是分手(断开连接)后的通知</p>
-<pre><code>func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
-}
-</code></pre><p>连接上peripheral后需要连接对应的服务才能算真正连上</p>
-<pre><code>func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
-    if error != nil {
-        MessageShow.ShareInstance.errorMessage = error?.localizedFailureReason ?? LS(&quot;notfindprintservice&quot;) //&quot;该设备找不到对应的打印服务&quot;
-        return
-    }
-    for service in peripheral.services! {
-        //正常打印机的打印服务就是这个uuid
-        if service.UUID == CBUUID(string: &quot;E7810A71-73AE-499D-8C15-FAA9AEF0C3F2&quot;) {
-            currentDevice?.service = service
-            //是的，你没看错，连上服务还得再连所谓的特性
-            peripheral.discoverCharacteristics(nil, forService: service)
-        }
-    }
-    if currentDevice?.service == nil {
-        MessageShow.ShareInstance.errorMessage = LS(&quot;notfindprintservice&quot;) //&quot;该设备找不到对应的打印服务&quot;
-        currentDevice = nil
-    }
-}
-
-连接characteristics(翻译：特性)
-
-func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
-    if error != nil {
-        MessageShow.ShareInstance.errorMessage = error?.localizedFailureReason ?? LS(&quot;notfindprintservice&quot;) //&quot;该设备找不到对应的打印服务&quot;
-        return
-    }
-
-    if service.characteristics != nil {
-        for characteristic in service.characteristics! {
-            if characteristic.UUID == CBUUID(string: &quot;BEF8D6C9-9C21-4C9E-B632-BD58C1009F9F&quot;) {
-                currentDevice?.characteristic = characteristic
-                peripheral.setNotifyValue(true, forCharacteristic: characteristic)
-                //打印机连上了，后面就可以对他发指令打印了
-                //printDelegate?.doPrintBill()
-            }
-        }
-    }
-}
-</code></pre><p>再来个断开连接的代码<br><code>blueManager?.cancelPeripheralConnection(currentDevice!.peripheral!)</code></p>
-<h1 id="打印机指令集"><a href="#打印机指令集" class="headerlink" title="打印机指令集"></a>打印机指令集</h1><p>再开始打印指令的教程前，免不得先说说遇到坑吧。</p>
-<ol>
-<li>ios对打印机的指令发送是必须要有长度限度的，不同打印机的长度不一样。当你发现打印一个长长的字符串发现打一半卡死时，就得考虑下长度截取的问题了。</li>
-<li>大多数打印机没有交互功能，也就是只能对牛弹琴了。so断开打印机的时机也是个问题。当然一对一永远连接的就不用断开了。</li>
-<li>打印条码，建议还是需要打印功能比较好的打印机。</li>
-</ol>
-<p>下面大致写下常用的打印指令：</p>
-<blockquote>
-<p>初始化打印机</p>
-</blockquote>
-<pre><code>func initPrint() {
-    sendCode([0x1b, 0x40], boolEnd: true)
-}
-</code></pre><blockquote>
-<p>打印字符串</p>
-</blockquote>
-<p>打印字符串的位置一般自己调吧，align表示这行（注意行，这个不能拆分）的打印靠左靠右</p>
-<pre><code>func printText(text: String, align: NSTextAlignment) {
-    self.align(align)
-    //中文字符打印需要转码
-    let encode =  CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)))
-    var printStr = text
-    //兼容某些渣渣打印机设置长度限制，好点的打印机1000也没什么问题
-    while printStr.charLength() &gt; 60 {
-        let nowStr = printStr.substringToIndex(32)
-        let tmpData = NSString(string: nowStr).dataUsingEncoding(encode, allowLossyConversion: false)!
-        sendMsg(tmpData)
-        printStr = printStr.substringFromIndex(32)
-    }
-    if printStr.characters.count &gt; 0 {
-        let tmpData = NSString(string: printStr).dataUsingEncoding(encode, allowLossyConversion: false)!
-        sendMsg(tmpData)
-    }
-}
-
-/**
- text 对齐
-
- - parameter align: .
- */
-func align(align:NSTextAlignment) -&gt; NSMutableData {
-    if align == currentAlign {
-        return NSMutableData()
-    }
-    currentAlign = align
-    var bytes:[UInt8] = [0x1b, 0x61]
-    switch align {
-    case .Center:
-        bytes.append(0x01)
-    case .Right:
-        bytes.append(0x02)
-    default:
-        bytes.append(0x00)
-    }
-    sendCode(bytes)
-    return NSMutableData()
-}
-
-//加粗
-
-func bold(enable:Bool) {
-    var bytes:[UInt8] = [0x1b, 0x45]
-    bytes.append(enable ? 0x01 : 0x00)
-    sendCode(bytes)
-}
-
-//打开钱箱    
-
-func openBox() {
-    let bytes:[UInt8] = [27,112, 0, 200,200]
-    sendCode(bytes)
-}
-
-/**
- 结束走纸 最后表示走几行纸
- */
-func endPrint() {
-    sendCode([0x1b, 0x64, 0x05] as [UInt8])
-    cutPaper()
-}
-
-/**
- 切纸
- */
-func cutPaper() {
-    //半切01，全切00
-    sendCode([0x1d, 0x56, 0x00] as [UInt8], boolEnd: true)
-}
-</code></pre><blockquote>
-<p>   打印图片</p>
-</blockquote>
-<p>图片需要做点阵转换，这个代码太多，给个搬砖地址。<a href="https://github.com/Haley-Wong/HLBluetoothDemo" target="_blank" rel="noopener">HLBluetoothDemo</a><br>，这里有点要注意下，改github的代码并不能在佳博打印机上打印二维码或者图片。主要是因为佳博打印机每次发送指令的最大长度只有146.而示例都是把指令全部组装好了一起发送，会导致打印机断片。</p>
-<p>所以下面的代码就是把图片指令拆分长度来发送给打印机</p>
-  <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">private</span> <span class="function"><span class="keyword">func</span> <span class="title">printImg</span><span class="params">(<span class="number">_</span> image: UIImage, width: CGFloat)</span></span> &#123;</span><br><span class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> borderImg = image.decorateBorder(<span class="number">10</span>) <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> img = borderImg.blackAndWhite()?.imageWithscaleMaxWidth(width) &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> data = img.bitmapData() &#123;</span><br><span class="line">                log.ln(<span class="string">"qrcode size: "</span> + data.<span class="built_in">count</span>.description)/</span><br><span class="line">                <span class="keyword">var</span> curIndex = <span class="number">0</span></span><br><span class="line">                <span class="keyword">let</span> step = <span class="number">100</span></span><br><span class="line">                <span class="keyword">while</span>(curIndex &lt; data.<span class="built_in">count</span>) &#123;</span><br><span class="line">                    <span class="keyword">let</span> endIndex = curIndex + step &lt; data.<span class="built_in">count</span> ? curIndex + step : data.<span class="built_in">count</span></span><br><span class="line">                    <span class="keyword">let</span> tmpData = data.subdata(<span class="keyword">in</span>: curIndex..&lt;endIndex)</span><br><span class="line">                    peripheral?.writeValue(tmpData, <span class="keyword">for</span>: characteristic!, type: .withoutResponse)</span><br><span class="line">                    curIndex += step</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        printNewLine()</span><br><span class="line"><span class="comment">//        // 恢复行间距</span></span><br><span class="line">        sendCode([<span class="number">0x1b</span>, <span class="number">0x32</span>], boolEnd: <span class="literal">true</span>)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>  上面代码里面有个<strong><em>image.decorateBorder</em></strong>，这是因为指令拆分后不知道为什么图片打印最下面几行总会有缺失，无法找到原因，所以做了个特别的处理，先给图片加了个外框。那么缺失的就是边框了，不影响图片整体打印。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">extension UIImage &#123;</span><br><span class="line">    func decorateBorder(_ borderWidth: CGFloat) -&gt; UIImage? &#123;</span><br><span class="line">        let resultSize = CGSize(width: self.size.width + 2 * borderWidth, height: self.size.height + 2 * borderWidth)</span><br><span class="line">        UIGraphicsBeginImageContext(resultSize)</span><br><span class="line">        let borderPath = UIBezierPath(roundedRect: CGRect(origin: CGPoint(x: 0, y: 0), size: resultSize), cornerRadius: 0)</span><br><span class="line">        UIColor.white.setFill()</span><br><span class="line">        borderPath.fill()</span><br><span class="line">        let imgRect = CGRect(x: borderWidth, y: borderWidth, width: self.size.width, height: self.size.height)</span><br><span class="line">        self.draw(in: imgRect)</span><br><span class="line">        let resultImg = UIGraphicsGetImageFromCurrentImageContext()</span><br><span class="line">        UIGraphicsEndImageContext()</span><br><span class="line">        return resultImg</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  之所以要用<strong><em>imageWithscaleMaxWidth</em></strong>，是因为二维码太宽导致图片大小太大，超出了打印机的缓存空间，会导致图片打印不出来。</p>
-<p>最后推荐下指令集比较完整的文档：</p>
-<p><a href="http://www.docin.com/p-676248934.html" target="_blank" rel="noopener"> http://www.docin.com/p-676248934.html </a></p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/ios/">ios</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Bluetooth/">Bluetooth</a><a href="/tags/Swift/">Swift</a><a href="/tags/ios/">ios</a><a href="/tags/Print/">Print</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2016/06/13/IOS蓝牙打印/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/06/13/IOS蓝牙打印/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
+  <nav id="page-nav" class="clearfix">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
+  </nav>
 
 </div>
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
@@ -1277,11 +1293,7 @@ func cutPaper() {
 			
 		
 			
-				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
+				<li><a href="/tags/Flutter/" title="Flutter">Flutter<sup>2</sup></a></li>
 			
 		
 			
@@ -1306,6 +1318,14 @@ func cutPaper() {
 		
 			
 				<li><a href="/tags/PM/" title="PM">PM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Swift/" title="Swift">Swift<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Print/" title="Print">Print<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -1375,7 +1395,7 @@ func cutPaper() {
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2021 
 		
 		<a href="/about" target="_blank" title="Wesin">Wesin</a>
 		
